@@ -1,0 +1,49 @@
+name: Publish
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  pypi:
+    name: Upload to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.2'
+      - name: Install
+        run: |
+          pip install wheel
+          pip install -e .
+      - name: Build
+        run: python setup.py sdist bdist_wheel
+      - name: Upload
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+
+  docs:
+    name: Build docs for Github Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.2'
+      - name: Pip
+        run: |
+          pip install -e .
+          pip install pdoc
+      - name: Pdoc
+        run:  pdoc --footer-text='Version ${{ github.ref_name }}' civet -o pdoc
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.2.2
+        with:
+          branch: gh-pages
+          folder: pdoc

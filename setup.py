@@ -1,0 +1,39 @@
+from setuptools import setup
+import os
+import shutil
+
+if 'CI' not in os.environ and not shutil.which('adapt_object_mesh'):
+    raise Exception(
+        'CIVET binaries such as "adapt_object_mesh" not found in $PATH.'
+        '\nHint: consider using container images, such as '
+        '"docker.io/fnndsc/mni-conda-base:civet2.1.1-python3.10.2"'
+    )
+
+with open('README.md', 'r') as f:
+    readme = f.read()
+
+setup(
+    name='pycivet',
+    version='0.0.1',
+    description='CIVET bindings',
+    long_description=readme,
+    long_description_content_type='text/markdown',
+    author='Jennings Zhang',
+    author_email='Jennings.Zhang@childrens.harvard.edu',
+    url='https://github.com/FNNDSC/pycivet',
+    project_urls={
+        'Documentation': 'https://fnndsc.github.io/pycivet/',
+        'Source': 'https://github.com/FNNDSC/pycivet',
+        'Tracker': 'https://github.com/FNNDSC/pycivet/issues',
+    },
+    license='MIT',
+    packages=['civet'],
+    python_requires='>=3.10.2',
+    classifiers=[
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.10',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Medical Science Apps.'
+    ]
+)
