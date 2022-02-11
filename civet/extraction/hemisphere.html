@@ -49,6 +49,9 @@
                                 <a class="function" href="#GenericHemisphere.just_sphere_mesh">just_sphere_mesh</a>
                         </li>
                         <li>
+                                <a class="function" href="#GenericHemisphere.get_model_for">get_model_for</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#GenericHemisphere.sphere_mesh_from">sphere_mesh_from</a>
                         </li>
                         <li>
@@ -66,7 +69,7 @@
     </ul>
 
 
-                    <footer>Version v0.0.1a4</footer>
+                    <footer>Version v0.0.1a5</footer>
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -109,25 +112,31 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract surface using `sphere_mesh` (marching-cubes).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SurfaceModel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform `WHITE_MODEL_320` as necessary in preparation for use with `sphere_mesh`.</span>
+
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">initial_model</span> <span class="o">=</span> <span class="n">WHITE_MODEL_320</span>
         <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span><span class="o">.</span><span class="n">slide_right</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span><span class="o">.</span><span class="n">slide_right</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span>
+            <span class="k">return</span> <span class="n">initial_model</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="n">sided_model</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare mask for marching-cubes using given model surface as a starting point,</span>
 <span class="sd">        and then execute `sphere_mesh`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">Mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">initial_model</span><span class="p">)</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
-                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># watch out: can&#39;t use something.append because we&#39;re changing file types,</span>
         <span class="c1"># attributes are not going to be copied automatically</span>
@@ -232,25 +241,31 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract surface using `sphere_mesh` (marching-cubes).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SurfaceModel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform `WHITE_MODEL_320` as necessary in preparation for use with `sphere_mesh`.</span>
+
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">initial_model</span> <span class="o">=</span> <span class="n">WHITE_MODEL_320</span>
         <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span><span class="o">.</span><span class="n">slide_right</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span><span class="o">.</span><span class="n">slide_right</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span>
+            <span class="k">return</span> <span class="n">initial_model</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="n">sided_model</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare mask for marching-cubes using given model surface as a starting point,</span>
 <span class="sd">        and then execute `sphere_mesh`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">Mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">initial_model</span><span class="p">)</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
-                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># watch out: can&#39;t use something.append because we&#39;re changing file types,</span>
         <span class="c1"># attributes are not going to be copied automatically</span>
@@ -297,21 +312,50 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract surface using `sphere_mesh` (marching-cubes).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</span>
-        <span class="n">initial_model</span> <span class="o">=</span> <span class="n">WHITE_MODEL_320</span>
-        <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span><span class="o">.</span><span class="n">slide_right</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sided_model</span> <span class="o">=</span> <span class="n">initial_model</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="n">sided_model</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">))</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Extract surface using <code>sphere_mesh</code> (marching-cubes).</p>
+</div>
+
+
+                            </div>
+                            <div id="GenericHemisphere.get_model_for" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericHemisphere.get_model_for">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">get_model_for</span><span class="signature">(
+    side: Optional[<a href="#Side">civet.extraction.hemisphere.Side</a>] = None
+) -&gt; <a href="starting_models.html#SurfaceModel">civet.extraction.starting_models.SurfaceModel</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SurfaceModel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform `WHITE_MODEL_320` as necessary in preparation for use with `sphere_mesh`.</span>
+
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">initial_model</span> <span class="o">=</span> <span class="n">WHITE_MODEL_320</span>
+        <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">LEFT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">side</span> <span class="ow">is</span> <span class="n">Side</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span><span class="o">.</span><span class="n">slide_right</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">initial_model</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Transform <code>WHITE_MODEL_320</code> as necessary in preparation for use with <code>sphere_mesh</code>.</p>
+
+<p>https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135</p>
 </div>
 
 
@@ -323,20 +367,22 @@
             <span class="def">def</span>
             <span class="name">sphere_mesh_from</span><span class="signature">(
     self,
-    initial_model: <a href="starting_models.html#SurfaceModel">civet.extraction.starting_models.SurfaceModel</a>
+    initial_model: <a href="starting_models.html#SurfaceModel">civet.extraction.starting_models.SurfaceModel</a>,
+    stdout=None,
+    stderr=None
 ) -&gt; <a href="surfaces.html#IrregularSurface">civet.extraction.surfaces.IrregularSurface</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare mask for marching-cubes using given model surface as a starting point,</span>
 <span class="sd">        and then execute `sphere_mesh`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">Mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">initial_model</span><span class="p">)</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
-                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">stderr</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># watch out: can&#39;t use something.append because we&#39;re changing file types,</span>
         <span class="c1"># attributes are not going to be copied automatically</span>
@@ -458,6 +504,7 @@ and then execute <code>sphere_mesh</code>.</p>
             </div>
             <div><dt><a href="#GenericHemisphere">GenericHemisphere</a></dt>
                                 <dd id="HemisphereMask.just_sphere_mesh" class="function"><a href="#GenericHemisphere.just_sphere_mesh">just_sphere_mesh</a></dd>
+                <dd id="HemisphereMask.get_model_for" class="function"><a href="#GenericHemisphere.get_model_for">get_model_for</a></dd>
                 <dd id="HemisphereMask.sphere_mesh_from" class="function"><a href="#GenericHemisphere.sphere_mesh_from">sphere_mesh_from</a></dd>
                 <dd id="HemisphereMask.prepare_mask_for_sphere_mesh" class="function"><a href="#GenericHemisphere.prepare_mask_for_sphere_mesh">prepare_mask_for_sphere_mesh</a></dd>
 
