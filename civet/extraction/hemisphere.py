@@ -24,25 +24,31 @@ class GenericHemisphere(GenericMask[_M], Generic[_M]):
         """
         Extract surface using `sphere_mesh` (marching-cubes).
         """
-        # https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135
+        return self.sphere_mesh_from(self.get_model_for(side))
+
+    @staticmethod
+    def get_model_for(side: Optional[Side] = None) -> SurfaceModel:
+        """
+        Transform `WHITE_MODEL_320` as necessary in preparation for use with `sphere_mesh`.
+
+        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L118-L135
+        """
         initial_model = WHITE_MODEL_320
         if side is Side.LEFT:
-            sided_model = initial_model.slide_left()
+            return initial_model.slide_left()
         elif side is Side.RIGHT:
-            sided_model = initial_model.flip_x().slide_right()
+            return initial_model.flip_x().slide_right()
         else:
-            sided_model = initial_model
+            return initial_model
 
-        return self.sphere_mesh_from(sided_model)
-
-    def sphere_mesh_from(self, initial_model: SurfaceModel) -> IrregularSurface:
+    def sphere_mesh_from(self, initial_model: SurfaceModel, stdout=None, stderr=None) -> IrregularSurface:
         """
         Prepare mask for marching-cubes using given model surface as a starting point,
         and then execute `sphere_mesh`.
         """
         def run(mask_file, surface):
             with self.prepare_mask_for_sphere_mesh(Mask(mask_file), initial_model) as sphere_mask:
-                sp.run(['sphere_mesh', sphere_mask, surface], check=True)
+                sp.run(['sphere_mesh', sphere_mask, surface], stdout=stdout, stderr=stderr, check=True)
 
         # watch out: can't use something.append because we're changing file types,
         # attributes are not going to be copied automatically
