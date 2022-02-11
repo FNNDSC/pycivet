@@ -74,7 +74,7 @@
     </ul>
 
 
-                    <footer>Version v0.0.1a3</footer>
+                    <footer>Version v0.0.1a4</footer>
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -125,7 +125,7 @@
 
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GenericSurface</span><span class="p">(</span><span class="n">Transformable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_S</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">GenericSurface</span><span class="p">(</span><span class="n">Transformable</span><span class="p">[</span><span class="n">_S</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_S</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides subclasses with helper functions which operate on `.obj` files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -177,13 +177,13 @@
                 <div class="decorator">@dataclass(frozen=True)</div>
 
         <span class="def">class</span>
-        <span class="name">GenericSurface</span><wbr>(<span class="base">civet.xfm.Transformable</span>, <span class="base">typing.Generic[~_S]</span>):
+        <span class="name">GenericSurface</span><wbr>(<span class="base">civet.xfm.Transformable[~_S]</span>, <span class="base">typing.Generic[~_S]</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GenericSurface</span><span class="p">(</span><span class="n">Transformable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_S</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">GenericSurface</span><span class="p">(</span><span class="n">Transformable</span><span class="p">[</span><span class="n">_S</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_S</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides subclasses with helper functions which operate on `.obj` files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -365,6 +365,8 @@
                 <dd id="GenericSurface.run" class="function"><a href="abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="GenericSurface.require_output" class="variable"><a href="abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="GenericSurface.save" class="function"><a href="abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="GenericSurface.intermediate_saved" class="function"><a href="abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="GenericSurface.intermediate_source" class="function"><a href="abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="GenericSurface.append" class="function"><a href="abstract_data.html#DataSource.append">append</a></dd>
 
             </div>
@@ -433,6 +435,8 @@
                 <dd id="Surface.run" class="function"><a href="abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="Surface.require_output" class="variable"><a href="abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="Surface.save" class="function"><a href="abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="Surface.intermediate_saved" class="function"><a href="abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="Surface.intermediate_source" class="function"><a href="abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="Surface.append" class="function"><a href="abstract_data.html#DataSource.append">append</a></dd>
 
             </div>

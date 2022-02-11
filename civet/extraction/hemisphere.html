@@ -51,6 +51,9 @@
                         <li>
                                 <a class="function" href="#GenericHemisphere.sphere_mesh_from">sphere_mesh_from</a>
                         </li>
+                        <li>
+                                <a class="function" href="#GenericHemisphere.prepare_mask_for_sphere_mesh">prepare_mask_for_sphere_mesh</a>
+                        </li>
                 </ul>
 
             </li>
@@ -63,7 +66,7 @@
     </ul>
 
 
-                    <footer>Version v0.0.1a3</footer>
+                    <footer>Version v0.0.1a4</footer>
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -80,11 +83,13 @@
                 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">civet.mask</span> <span class="kn">import</span> <span class="n">GenericMask</span>
+            <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">civet.mask</span> <span class="kn">import</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">GenericMask</span>
 <span class="kn">from</span> <span class="nn">civet.extraction.surfaces</span> <span class="kn">import</span> <span class="n">IrregularSurface</span>
-<span class="kn">from</span> <span class="nn">civet.extraction.starting_models</span> <span class="kn">import</span> <span class="n">WHITE_MODEL_320</span>
+<span class="kn">from</span> <span class="nn">civet.extraction.starting_models</span> <span class="kn">import</span> <span class="n">WHITE_MODEL_320</span><span class="p">,</span> <span class="n">SurfaceModel</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 
 
 <span class="k">class</span> <span class="nc">Side</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -115,12 +120,35 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="n">sided_model</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prepare mask for maching cubes using given model surface as a starting point,</span>
+<span class="sd">        Prepare mask for marching-cubes using given model surface as a starting point,</span>
 <span class="sd">        and then execute `sphere_mesh`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">Mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">initial_model</span><span class="p">)</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># watch out: can&#39;t use something.append because we&#39;re changing file types,</span>
+        <span class="c1"># attributes are not going to be copied automatically</span>
+        <span class="k">return</span> <span class="n">IrregularSurface</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">require_output</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">require_output</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L189-L207</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;out=1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_source</span><span class="p">()</span> <span class="k">as</span> <span class="n">filled</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">surface_mask2</span><span class="p">(</span><span class="n">filled</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_source</span><span class="p">()</span> <span class="k">as</span> <span class="n">surface_mask_vol</span><span class="p">:</span>
+                <span class="n">resampled</span> <span class="o">=</span> <span class="n">surface_mask_vol</span><span class="o">.</span><span class="n">mincresample</span><span class="p">(</span><span class="n">filled</span><span class="p">)</span>
+                <span class="n">overlap</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;if(A[0]&gt;0.5||A[1]&gt;0.5)</span><span class="si">{1}</span><span class="s1">else</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">resampled</span><span class="p">)</span>
+                <span class="n">dilated</span> <span class="o">=</span> <span class="n">overlap</span><span class="o">.</span><span class="n">dilate_volume</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">added</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;A[0]+A[1]&#39;</span><span class="p">,</span> <span class="n">dilated</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">added</span><span class="o">.</span><span class="n">reshape255</span><span class="p">()</span><span class="o">.</span><span class="n">mincdefrag</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">sphere_mask</span>
 
 
 <span class="k">class</span> <span class="nc">HemisphereMask</span><span class="p">(</span><span class="n">GenericHemisphere</span><span class="p">[</span><span class="s1">&#39;HemisphereMask&#39;</span><span class="p">]):</span>
@@ -215,12 +243,35 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere_mesh_from</span><span class="p">(</span><span class="n">sided_model</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prepare mask for maching cubes using given model surface as a starting point,</span>
+<span class="sd">        Prepare mask for marching-cubes using given model surface as a starting point,</span>
 <span class="sd">        and then execute `sphere_mesh`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">Mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">initial_model</span><span class="p">)</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># watch out: can&#39;t use something.append because we&#39;re changing file types,</span>
+        <span class="c1"># attributes are not going to be copied automatically</span>
+        <span class="k">return</span> <span class="n">IrregularSurface</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">require_output</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">require_output</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L189-L207</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;out=1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_source</span><span class="p">()</span> <span class="k">as</span> <span class="n">filled</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">surface_mask2</span><span class="p">(</span><span class="n">filled</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_source</span><span class="p">()</span> <span class="k">as</span> <span class="n">surface_mask_vol</span><span class="p">:</span>
+                <span class="n">resampled</span> <span class="o">=</span> <span class="n">surface_mask_vol</span><span class="o">.</span><span class="n">mincresample</span><span class="p">(</span><span class="n">filled</span><span class="p">)</span>
+                <span class="n">overlap</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;if(A[0]&gt;0.5||A[1]&gt;0.5)</span><span class="si">{1}</span><span class="s1">else</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">resampled</span><span class="p">)</span>
+                <span class="n">dilated</span> <span class="o">=</span> <span class="n">overlap</span><span class="o">.</span><span class="n">dilate_volume</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">added</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;A[0]+A[1]&#39;</span><span class="p">,</span> <span class="n">dilated</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">added</span><span class="o">.</span><span class="n">reshape255</span><span class="p">()</span><span class="o">.</span><span class="n">mincdefrag</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">sphere_mask</span>
 </pre></div>
 
         </details>
@@ -272,24 +323,70 @@
             <span class="def">def</span>
             <span class="name">sphere_mesh_from</span><span class="signature">(
     self,
-    initial_model: Ellipsis
+    initial_model: <a href="starting_models.html#SurfaceModel">civet.extraction.starting_models.SurfaceModel</a>
 ) -&gt; <a href="surfaces.html#IrregularSurface">civet.extraction.surfaces.IrregularSurface</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sphere_mesh_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prepare mask for maching cubes using given model surface as a starting point,</span>
+<span class="sd">        Prepare mask for marching-cubes using given model surface as a starting point,</span>
 <span class="sd">        and then execute `sphere_mesh`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">mask_file</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">Mask</span><span class="p">(</span><span class="n">mask_file</span><span class="p">),</span> <span class="n">initial_model</span><span class="p">)</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sphere_mesh&#39;</span><span class="p">,</span> <span class="n">sphere_mask</span><span class="p">,</span> <span class="n">surface</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># watch out: can&#39;t use something.append because we&#39;re changing file types,</span>
+        <span class="c1"># attributes are not going to be copied automatically</span>
+        <span class="k">return</span> <span class="n">IrregularSurface</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">require_output</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">require_output</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Prepare mask for maching cubes using given model surface as a starting point,
+            <div class="docstring"><p>Prepare mask for marching-cubes using given model surface as a starting point,
 and then execute <code>sphere_mesh</code>.</p>
+</div>
+
+
+                            </div>
+                            <div id="GenericHemisphere.prepare_mask_for_sphere_mesh" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericHemisphere.prepare_mask_for_sphere_mesh">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+        <div class="decorator">@contextmanager</div>
+
+            <span class="def">def</span>
+            <span class="name">prepare_mask_for_sphere_mesh</span><span class="signature">(
+    mask: <a href="../mask.html#Mask">civet.mask.Mask</a>,
+    initial_model: <a href="starting_models.html#SurfaceModel">civet.extraction.starting_models.SurfaceModel</a>
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">prepare_mask_for_sphere_mesh</span><span class="p">(</span><span class="n">mask</span><span class="p">:</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L189-L207</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;out=1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_source</span><span class="p">()</span> <span class="k">as</span> <span class="n">filled</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">initial_model</span><span class="o">.</span><span class="n">surface_mask2</span><span class="p">(</span><span class="n">filled</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_source</span><span class="p">()</span> <span class="k">as</span> <span class="n">surface_mask_vol</span><span class="p">:</span>
+                <span class="n">resampled</span> <span class="o">=</span> <span class="n">surface_mask_vol</span><span class="o">.</span><span class="n">mincresample</span><span class="p">(</span><span class="n">filled</span><span class="p">)</span>
+                <span class="n">overlap</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;if(A[0]&gt;0.5||A[1]&gt;0.5)</span><span class="si">{1}</span><span class="s1">else</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">resampled</span><span class="p">)</span>
+                <span class="n">dilated</span> <span class="o">=</span> <span class="n">overlap</span><span class="o">.</span><span class="n">dilate_volume</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">added</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="s1">&#39;A[0]+A[1]&#39;</span><span class="p">,</span> <span class="n">dilated</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">added</span><span class="o">.</span><span class="n">reshape255</span><span class="p">()</span><span class="o">.</span><span class="n">mincdefrag</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">sphere_mask</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">sphere_mask</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L189-L207</p>
 </div>
 
 
@@ -301,6 +398,11 @@ and then execute <code>sphere_mesh</code>.</p>
                                 <dd id="GenericHemisphere.__init__" class="function"><a href="../mask.html#GenericMask.__init__">GenericMask</a></dd>
                 <dd id="GenericHemisphere.preferred_suffix" class="variable"><a href="../mask.html#GenericMask.preferred_suffix">preferred_suffix</a></dd>
                 <dd id="GenericHemisphere.reshape_bbox" class="function"><a href="../mask.html#GenericMask.reshape_bbox">reshape_bbox</a></dd>
+                <dd id="GenericHemisphere.minccalc_u8" class="function"><a href="../mask.html#GenericMask.minccalc_u8">minccalc_u8</a></dd>
+                <dd id="GenericHemisphere.mincresample" class="function"><a href="../mask.html#GenericMask.mincresample">mincresample</a></dd>
+                <dd id="GenericHemisphere.dilate_volume" class="function"><a href="../mask.html#GenericMask.dilate_volume">dilate_volume</a></dd>
+                <dd id="GenericHemisphere.reshape255" class="function"><a href="../mask.html#GenericMask.reshape255">reshape255</a></dd>
+                <dd id="GenericHemisphere.mincdefrag" class="function"><a href="../mask.html#GenericMask.mincdefrag">mincdefrag</a></dd>
 
             </div>
             <div><dt><a href="../abstract_data.html#DataSource">civet.abstract_data.DataSource</a></dt>
@@ -308,6 +410,8 @@ and then execute <code>sphere_mesh</code>.</p>
                 <dd id="GenericHemisphere.run" class="function"><a href="../abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="GenericHemisphere.require_output" class="variable"><a href="../abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="GenericHemisphere.save" class="function"><a href="../abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="GenericHemisphere.intermediate_saved" class="function"><a href="../abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="GenericHemisphere.intermediate_source" class="function"><a href="../abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="GenericHemisphere.append" class="function"><a href="../abstract_data.html#DataSource.append">append</a></dd>
 
             </div>
@@ -345,11 +449,17 @@ and then execute <code>sphere_mesh</code>.</p>
                                 <dd id="HemisphereMask.__init__" class="function"><a href="../mask.html#GenericMask.__init__">GenericMask</a></dd>
                 <dd id="HemisphereMask.preferred_suffix" class="variable"><a href="../mask.html#GenericMask.preferred_suffix">preferred_suffix</a></dd>
                 <dd id="HemisphereMask.reshape_bbox" class="function"><a href="../mask.html#GenericMask.reshape_bbox">reshape_bbox</a></dd>
+                <dd id="HemisphereMask.minccalc_u8" class="function"><a href="../mask.html#GenericMask.minccalc_u8">minccalc_u8</a></dd>
+                <dd id="HemisphereMask.mincresample" class="function"><a href="../mask.html#GenericMask.mincresample">mincresample</a></dd>
+                <dd id="HemisphereMask.dilate_volume" class="function"><a href="../mask.html#GenericMask.dilate_volume">dilate_volume</a></dd>
+                <dd id="HemisphereMask.reshape255" class="function"><a href="../mask.html#GenericMask.reshape255">reshape255</a></dd>
+                <dd id="HemisphereMask.mincdefrag" class="function"><a href="../mask.html#GenericMask.mincdefrag">mincdefrag</a></dd>
 
             </div>
             <div><dt><a href="#GenericHemisphere">GenericHemisphere</a></dt>
                                 <dd id="HemisphereMask.just_sphere_mesh" class="function"><a href="#GenericHemisphere.just_sphere_mesh">just_sphere_mesh</a></dd>
                 <dd id="HemisphereMask.sphere_mesh_from" class="function"><a href="#GenericHemisphere.sphere_mesh_from">sphere_mesh_from</a></dd>
+                <dd id="HemisphereMask.prepare_mask_for_sphere_mesh" class="function"><a href="#GenericHemisphere.prepare_mask_for_sphere_mesh">prepare_mask_for_sphere_mesh</a></dd>
 
             </div>
             <div><dt><a href="../abstract_data.html#DataSource">civet.abstract_data.DataSource</a></dt>
@@ -357,6 +467,8 @@ and then execute <code>sphere_mesh</code>.</p>
                 <dd id="HemisphereMask.run" class="function"><a href="../abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="HemisphereMask.require_output" class="variable"><a href="../abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="HemisphereMask.save" class="function"><a href="../abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="HemisphereMask.intermediate_saved" class="function"><a href="../abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="HemisphereMask.intermediate_source" class="function"><a href="../abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="HemisphereMask.append" class="function"><a href="../abstract_data.html#DataSource.append">append</a></dd>
 
             </div>

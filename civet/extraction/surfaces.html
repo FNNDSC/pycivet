@@ -45,6 +45,9 @@
             <li>
                     <a class="class" href="#GenericRegularSurface">GenericRegularSurface</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#GenericRegularSurface.surface_mask2">surface_mask2</a>
+                        </li>
                 </ul>
 
             </li>
@@ -57,7 +60,7 @@
     </ul>
 
 
-                    <footer>Version v0.0.1a3</footer>
+                    <footer>Version v0.0.1a4</footer>
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -75,11 +78,14 @@
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">from</span> <span class="nn">civet.obj</span> <span class="kn">import</span> <span class="n">GenericSurface</span>
+<span class="kn">from</span> <span class="nn">civet.mask</span> <span class="kn">import</span> <span class="n">GenericMask</span>
 
 
 <span class="n">_IS</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_IS&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericIrregularSurface&#39;</span><span class="p">)</span>
 <span class="n">_RS</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_RS&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericSurface&#39;</span><span class="p">)</span>
+<span class="n">_M</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_M&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">GenericMask</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">GenericIrregularSurface</span><span class="p">(</span><span class="n">GenericSurface</span><span class="p">[</span><span class="n">_IS</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_IS</span><span class="p">]):</span>
@@ -102,7 +108,13 @@
 <span class="sd">    Provides subclasses with helper functions which can operate on</span>
 <span class="sd">    a polygonal mesh of standard connectivity.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">surface_mask2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_volume</span><span class="p">:</span> <span class="n">_M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">given_volume</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">surface</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surface_mask2&#39;</span><span class="p">,</span> <span class="n">given_volume</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">output</span><span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">in_volume</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">RegularSurface</span><span class="p">(</span><span class="n">GenericRegularSurface</span><span class="p">[</span><span class="s1">&#39;RegularSurface&#39;</span><span class="p">]):</span>
@@ -171,6 +183,8 @@ a polygonal mesh with non-standard connectivity.</p>
                 <dd id="GenericIrregularSurface.run" class="function"><a href="../abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="GenericIrregularSurface.require_output" class="variable"><a href="../abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="GenericIrregularSurface.save" class="function"><a href="../abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="GenericIrregularSurface.intermediate_saved" class="function"><a href="../abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="GenericIrregularSurface.intermediate_source" class="function"><a href="../abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="GenericIrregularSurface.append" class="function"><a href="../abstract_data.html#DataSource.append">append</a></dd>
 
             </div>
@@ -223,6 +237,8 @@ a polygonal mesh with non-standard connectivity.</p>
                 <dd id="IrregularSurface.run" class="function"><a href="../abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="IrregularSurface.require_output" class="variable"><a href="../abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="IrregularSurface.save" class="function"><a href="../abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="IrregularSurface.intermediate_saved" class="function"><a href="../abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="IrregularSurface.intermediate_source" class="function"><a href="../abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="IrregularSurface.append" class="function"><a href="../abstract_data.html#DataSource.append">append</a></dd>
 
             </div>
@@ -245,7 +261,13 @@ a polygonal mesh with non-standard connectivity.</p>
 <span class="sd">    Provides subclasses with helper functions which can operate on</span>
 <span class="sd">    a polygonal mesh of standard connectivity.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">surface_mask2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_volume</span><span class="p">:</span> <span class="n">_M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">given_volume</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">surface</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surface_mask2&#39;</span><span class="p">,</span> <span class="n">given_volume</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">output</span><span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">in_volume</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -255,6 +277,29 @@ a polygonal mesh of standard connectivity.</p>
 </div>
 
 
+                            <div id="GenericRegularSurface.surface_mask2" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericRegularSurface.surface_mask2">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">surface_mask2</span><span class="signature">(self, in_volume: ~_M) -&gt; ~_M</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">surface_mask2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_volume</span><span class="p">:</span> <span class="n">_M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">given_volume</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">surface</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surface_mask2&#39;</span><span class="p">,</span> <span class="n">given_volume</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">output</span><span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">in_volume</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -277,6 +322,8 @@ a polygonal mesh of standard connectivity.</p>
                 <dd id="GenericRegularSurface.run" class="function"><a href="../abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="GenericRegularSurface.require_output" class="variable"><a href="../abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="GenericRegularSurface.save" class="function"><a href="../abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="GenericRegularSurface.intermediate_saved" class="function"><a href="../abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="GenericRegularSurface.intermediate_source" class="function"><a href="../abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="GenericRegularSurface.append" class="function"><a href="../abstract_data.html#DataSource.append">append</a></dd>
 
             </div>
@@ -336,6 +383,10 @@ denominators of <em>N</em>.</p>
                 <dd id="RegularSurface.slide_right" class="function"><a href="../obj.html#GenericSurface.slide_right">slide_right</a></dd>
 
             </div>
+            <div><dt><a href="#GenericRegularSurface">GenericRegularSurface</a></dt>
+                                <dd id="RegularSurface.surface_mask2" class="function"><a href="#GenericRegularSurface.surface_mask2">surface_mask2</a></dd>
+
+            </div>
             <div><dt>civet.xfm.Transformable</dt>
                                 <dd id="RegularSurface.append_xfm" class="function">append_xfm</dd>
 
@@ -345,6 +396,8 @@ denominators of <em>N</em>.</p>
                 <dd id="RegularSurface.run" class="function"><a href="../abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="RegularSurface.require_output" class="variable"><a href="../abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="RegularSurface.save" class="function"><a href="../abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="RegularSurface.intermediate_saved" class="function"><a href="../abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="RegularSurface.intermediate_source" class="function"><a href="../abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="RegularSurface.append" class="function"><a href="../abstract_data.html#DataSource.append">append</a></dd>
 
             </div>

@@ -47,6 +47,21 @@
                         <li>
                                 <a class="function" href="#GenericMask.reshape_bbox">reshape_bbox</a>
                         </li>
+                        <li>
+                                <a class="function" href="#GenericMask.minccalc_u8">minccalc_u8</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMask.mincresample">mincresample</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMask.dilate_volume">dilate_volume</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMask.reshape255">reshape255</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMask.mincdefrag">mincdefrag</a>
+                        </li>
                 </ul>
 
             </li>
@@ -59,7 +74,7 @@
     </ul>
 
 
-                    <footer>Version v0.0.1a3</footer>
+                    <footer>Version v0.0.1a4</footer>
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -102,13 +117,16 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">from</span> <span class="nn">civet.abstract_data</span> <span class="kn">import</span> <span class="n">DataSource</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">ContextManager</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">ExitStack</span>
+
 
 <span class="n">_M</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_M&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMask&#39;</span><span class="p">)</span>
+<span class="n">_O</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_O&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMask&#39;</span><span class="p">)</span>
 
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">DataSource</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">DataSource</span><span class="p">[</span><span class="n">_M</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides a subclass with MINC volume mask related functions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -136,6 +154,57 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;mincbbox&#39;</span><span class="p">,</span> <span class="s1">&#39;-mincreshape&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">])</span>
         <span class="n">decoded</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">decoded</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">_O</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">others</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ContextManager</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">stack</span><span class="p">:</span>
+                <span class="n">other_files</span> <span class="o">=</span> <span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">others</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;minccalc&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-expression&#39;</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span>
+                    <span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="n">other_files</span><span class="p">,</span> <span class="n">output</span>
+                <span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like</span><span class="p">:</span> <span class="n">_O</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_O</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">like_volume</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-like&#39;</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">,</span>
+                    <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span>
+                <span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">like</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)]</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
+                <span class="nb">input</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">]</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mincdefrag&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stencil</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_connect</span><span class="p">))</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Mask</span><span class="p">(</span><span class="n">GenericMask</span><span class="p">[</span><span class="s1">&#39;Mask&#39;</span><span class="p">]):</span>
@@ -164,13 +233,13 @@
                 <div class="decorator">@dataclass(frozen=True)</div>
 
         <span class="def">class</span>
-        <span class="name">GenericMask</span><wbr>(<span class="base"><a href="abstract_data.html#DataSource">civet.abstract_data.DataSource</a></span>, <span class="base">typing.Generic[~_M]</span>):
+        <span class="name">GenericMask</span><wbr>(<span class="base"><a href="abstract_data.html#DataSource">civet.abstract_data.DataSource[~_M]</a></span>, <span class="base">typing.Generic[~_M]</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">DataSource</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">DataSource</span><span class="p">[</span><span class="n">_M</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides a subclass with MINC volume mask related functions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -198,6 +267,57 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;mincbbox&#39;</span><span class="p">,</span> <span class="s1">&#39;-mincreshape&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">])</span>
         <span class="n">decoded</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">decoded</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">_O</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">others</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ContextManager</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">stack</span><span class="p">:</span>
+                <span class="n">other_files</span> <span class="o">=</span> <span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">others</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;minccalc&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-expression&#39;</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span>
+                    <span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="n">other_files</span><span class="p">,</span> <span class="n">output</span>
+                <span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like</span><span class="p">:</span> <span class="n">_O</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_O</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">like_volume</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-like&#39;</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">,</span>
+                    <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span>
+                <span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">like</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)]</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
+                <span class="nb">input</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">]</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mincdefrag&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stencil</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_connect</span><span class="p">))</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -268,6 +388,147 @@
 
 
                             </div>
+                            <div id="GenericMask.minccalc_u8" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.minccalc_u8">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">minccalc_u8</span><span class="signature">(self, expression: str, *args: ~_O) -&gt; ~_M</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">_O</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">others</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ContextManager</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">other</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">ExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">stack</span><span class="p">:</span>
+                <span class="n">other_files</span> <span class="o">=</span> <span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">others</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;minccalc&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-expression&#39;</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span>
+                    <span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="n">other_files</span><span class="p">,</span> <span class="n">output</span>
+                <span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="GenericMask.mincresample" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.mincresample">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">mincresample</span><span class="signature">(self, like: ~_O) -&gt; ~_O</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like</span><span class="p">:</span> <span class="n">_O</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_O</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">like_volume</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-like&#39;</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">,</span>
+                    <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span>
+                <span class="p">]</span>
+                <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">like</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="GenericMask.dilate_volume" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.dilate_volume">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">dilate_volume</span><span class="signature">(
+    self,
+    dilation_value: int,
+    neighbors: Literal[6, 26],
+    n_dilations: int
+) -&gt; ~_M</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)]</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="GenericMask.reshape255" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.reshape255">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">reshape255</span><span class="signature">(self) -&gt; ~_M</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
+                <span class="nb">input</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">]</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="GenericMask.mincdefrag" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.mincdefrag">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">mincdefrag</span><span class="signature">(
+    self,
+    label: int,
+    stencil: Literal[6, 19, 27],
+    max_connect: Optional[int] = None
+) -&gt; ~_M</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mincdefrag&#39;</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stencil</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_connect</span><span class="p">))</span>
+            <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -276,6 +537,8 @@
                 <dd id="GenericMask.run" class="function"><a href="abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="GenericMask.require_output" class="variable"><a href="abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="GenericMask.save" class="function"><a href="abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="GenericMask.intermediate_saved" class="function"><a href="abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="GenericMask.intermediate_source" class="function"><a href="abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="GenericMask.append" class="function"><a href="abstract_data.html#DataSource.append">append</a></dd>
 
             </div>
@@ -329,6 +592,11 @@
                                 <dd id="Mask.__init__" class="function"><a href="#GenericMask.__init__">GenericMask</a></dd>
                 <dd id="Mask.preferred_suffix" class="variable"><a href="#GenericMask.preferred_suffix">preferred_suffix</a></dd>
                 <dd id="Mask.reshape_bbox" class="function"><a href="#GenericMask.reshape_bbox">reshape_bbox</a></dd>
+                <dd id="Mask.minccalc_u8" class="function"><a href="#GenericMask.minccalc_u8">minccalc_u8</a></dd>
+                <dd id="Mask.mincresample" class="function"><a href="#GenericMask.mincresample">mincresample</a></dd>
+                <dd id="Mask.dilate_volume" class="function"><a href="#GenericMask.dilate_volume">dilate_volume</a></dd>
+                <dd id="Mask.reshape255" class="function"><a href="#GenericMask.reshape255">reshape255</a></dd>
+                <dd id="Mask.mincdefrag" class="function"><a href="#GenericMask.mincdefrag">mincdefrag</a></dd>
 
             </div>
             <div><dt><a href="abstract_data.html#DataSource">civet.abstract_data.DataSource</a></dt>
@@ -336,6 +604,8 @@
                 <dd id="Mask.run" class="function"><a href="abstract_data.html#DataSource.run">run</a></dd>
                 <dd id="Mask.require_output" class="variable"><a href="abstract_data.html#DataSource.require_output">require_output</a></dd>
                 <dd id="Mask.save" class="function"><a href="abstract_data.html#DataSource.save">save</a></dd>
+                <dd id="Mask.intermediate_saved" class="function"><a href="abstract_data.html#DataSource.intermediate_saved">intermediate_saved</a></dd>
+                <dd id="Mask.intermediate_source" class="function"><a href="abstract_data.html#DataSource.intermediate_source">intermediate_source</a></dd>
                 <dd id="Mask.append" class="function"><a href="abstract_data.html#DataSource.append">append</a></dd>
 
             </div>

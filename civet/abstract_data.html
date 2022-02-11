@@ -49,6 +49,12 @@
                                 <a class="function" href="#DataSource.save">save</a>
                         </li>
                         <li>
+                                <a class="function" href="#DataSource.intermediate_saved">intermediate_saved</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DataSource.intermediate_source">intermediate_source</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#DataSource.append">append</a>
                         </li>
                 </ul>
@@ -63,7 +69,7 @@
     </ul>
 
 
-                    <footer>Version v0.0.1a3</footer>
+                    <footer>Version v0.0.1a4</footer>
 
                     <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
                         built with <span class="visually-hidden">pdoc</span><img
@@ -90,7 +96,8 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">PathLike</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ContextManager</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 
 
 <span class="k">class</span> <span class="nc">_ISavable</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
@@ -132,10 +139,11 @@
 
 
 <span class="n">RunFunction</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+<span class="n">_D</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_D&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;DataSource&#39;</span><span class="p">)</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DataSource</span><span class="p">(</span><span class="n">_ISavable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DataSource</span><span class="p">(</span><span class="n">_ISavable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_D</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A `DataSource` is a node of a linked-list representing a chain of programs</span>
 <span class="sd">    which process data. It itself represents a data-processing program. The</span>
@@ -175,14 +183,28 @@
 <span class="sd">        object&#39;s `run` method on the given `output` path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">preferred_suffix</span><span class="p">)</span> <span class="k">as</span> <span class="n">real_input</span><span class="p">:</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">require_output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoOutputException</span><span class="p">()</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">intermediate_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce the result of this source to a temporary file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preferred_suffix</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">output</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">intermediate_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="n">_D</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce the result of this source, wrapped in its own type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">saved_file</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">saved_file</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="n">RunFunction</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -212,13 +234,13 @@
                 <div class="decorator">@dataclasses.dataclass(frozen=True)</div>
 
         <span class="def">class</span>
-        <span class="name">DataSource</span><wbr>(<span class="base"><a href="#_ISavable">_ISavable</a></span>):
+        <span class="name">DataSource</span><wbr>(<span class="base"><a href="#_ISavable">_ISavable</a></span>, <span class="base">typing.Generic[~_D]</span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DataSource</span><span class="p">(</span><span class="n">_ISavable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DataSource</span><span class="p">(</span><span class="n">_ISavable</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_D</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A `DataSource` is a node of a linked-list representing a chain of programs</span>
 <span class="sd">    which process data. It itself represents a data-processing program. The</span>
@@ -258,14 +280,28 @@
 <span class="sd">        object&#39;s `run` method on the given `output` path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">preferred_suffix</span><span class="p">)</span> <span class="k">as</span> <span class="n">real_input</span><span class="p">:</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">require_output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoOutputException</span><span class="p">()</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">intermediate_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce the result of this source to a temporary file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preferred_suffix</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">output</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">intermediate_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="n">_D</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce the result of this source, wrapped in its own type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">saved_file</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">saved_file</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="n">RunFunction</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -426,9 +462,6 @@ output at the path it was given.</p>
 <span class="sd">        object&#39;s `run` method on the given `output` path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">preferred_suffix</span><span class="p">)</span> <span class="k">as</span> <span class="n">real_input</span><span class="p">:</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">real_input</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
 
@@ -441,6 +474,61 @@ output at the path it was given.</p>
             <div class="docstring"><p>Call <code><a href="#DataSource.save">save</a></code> on all previous <code><a href="#DataSource">DataSource</a></code> before this one, writing
 intermediate outputs to temporary files. After that, invoke this
 object's <code><a href="#DataSource.run">run</a></code> method on the given <code>output</code> path.</p>
+</div>
+
+
+                            </div>
+                            <div id="DataSource.intermediate_saved" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DataSource.intermediate_saved">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@contextmanager</div>
+
+            <span class="def">def</span>
+            <span class="name">intermediate_saved</span><span class="signature">(self) -&gt; ContextManager[str | os.PathLike]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">intermediate_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce the result of this source to a temporary file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preferred_suffix</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">output</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Produce the result of this source to a temporary file.</p>
+</div>
+
+
+                            </div>
+                            <div id="DataSource.intermediate_source" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DataSource.intermediate_source">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@contextmanager</div>
+
+            <span class="def">def</span>
+            <span class="name">intermediate_source</span><span class="signature">(self) -&gt; ContextManager[~_D]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">intermediate_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="n">_D</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce the result of this source, wrapped in its own type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">intermediate_saved</span><span class="p">()</span> <span class="k">as</span> <span class="n">saved_file</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">saved_file</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Produce the result of this source, wrapped in its own type.</p>
 </div>
 
 
