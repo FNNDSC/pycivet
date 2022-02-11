@@ -14,7 +14,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pycivet',
-    version='0.0.1a6',
+    version='0.0.1a7',
     description='Object-oriented CIVET bindings for Python',
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -27,7 +27,7 @@ setup(
         'Tracker': 'https://github.com/FNNDSC/pycivet/issues',
     },
     license='MIT',
-    packages=find_packages(exclude='civet.tests.*'),
+    packages=find_packages(exclude=('*.tests',)),
     python_requires='>=3.10.2',
     classifiers=[
         'License :: OSI Approved :: MIT License',
