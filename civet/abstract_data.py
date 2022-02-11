@@ -6,7 +6,8 @@ import dataclasses
 import shutil
 from os import path, PathLike
 from tempfile import NamedTemporaryFile
-from typing import ClassVar, Callable
+from typing import ClassVar, Callable, ContextManager
+from contextlib import contextmanager
 
 
 class _ISavable(abc.ABC):
@@ -91,14 +92,20 @@ class DataSource(_ISavable):
         object's `run` method on the given `output` path.
         """
         with NamedTemporaryFile(suffix=self.prev.preferred_suffix) as real_input:
-
-            print(f'{self}, {real_input.name} -> {output}')
-
             self.prev.save(real_input.name)
             self.run(real_input.name, output)
 
         if self.require_output and not path.exists(output):
             raise NoOutputException()
+
+    @contextmanager
+    def as_intermediate(self) -> ContextManager[str | PathLike]:
+        """
+        Produce the result of this source to a temporary file.
+        """
+        with NamedTemporaryFile(suffix=self.preferred_suffix) as output:
+            self.save(output.name)
+            yield output.name
 
     def append(self, run: RunFunction):
         """

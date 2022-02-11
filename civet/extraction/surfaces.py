@@ -1,9 +1,12 @@
 from typing import Generic, TypeVar
+import subprocess as sp
 from civet.obj import GenericSurface
+from civet.mask import GenericMask
 
 
 _IS = TypeVar('_IS', bound='GenericIrregularSurface')
 _RS = TypeVar('_RS', bound='GenericSurface')
+_M = TypeVar('_M', bound=GenericMask)
 
 
 class GenericIrregularSurface(GenericSurface[_IS], Generic[_IS]):
@@ -26,7 +29,13 @@ class GenericRegularSurface(GenericSurface[_RS], Generic[_RS]):
     Provides subclasses with helper functions which can operate on
     a polygonal mesh of standard connectivity.
     """
-    pass
+
+    def surface_mask2(self, in_volume: GenericMask[_M]) -> GenericMask[_M]:
+        def run(given_volume, output):
+            with self.as_intermediate() as surface:
+                cmd = ['surface_mask2', given_volume, surface, output]
+                sp.run(cmd, check=True)
+        return in_volume.append(run)
 
 
 class RegularSurface(GenericRegularSurface['RegularSurface']):
