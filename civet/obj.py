@@ -21,7 +21,7 @@ _S = TypeVar('_S', bound='GenericSurface')
 
 
 @dataclass(frozen=True)
-class GenericSurface(Transformable, Generic[_S]):
+class GenericSurface(Transformable[_S], Generic[_S]):
     """
     Provides subclasses with helper functions which operate on `.obj` files.
     """

@@ -56,15 +56,13 @@ class GenericHemisphere(GenericMask[_M], Generic[_M]):
         """
         https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L189-L207
         """
-        with mask.minccalc_u8('out=1').as_intermediate() as filled_file:
-            filled_vol = Mask(filled_file)
-            with initial_model.surface_mask2(filled_vol).as_intermediate() as surface_mask_file:
-                surface_mask_vol = Mask(surface_mask_file)
-                resampled = surface_mask_vol.mincresample(filled_vol)
+        with mask.minccalc_u8('out=1').intermediate_source() as filled:
+            with initial_model.surface_mask2(filled).intermediate_source() as surface_mask_vol:
+                resampled = surface_mask_vol.mincresample(filled)
                 overlap = mask.minccalc_u8('if(A[0]>0.5||A[1]>0.5){1}else{0}', resampled)
                 dilated = overlap.dilate_volume(1, 26, 1)
                 added = mask.minccalc_u8('A[0]+A[1]', dilated)
-                with added.reshape255().mincdefrag(2, 19).as_intermediate() as sphere_mask:
+                with added.reshape255().mincdefrag(2, 19).intermediate_saved() as sphere_mask:
                     yield sphere_mask
 
 

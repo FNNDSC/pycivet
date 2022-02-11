@@ -24,7 +24,7 @@ _O = TypeVar('_O', bound='GenericMask')
 
 
 @dataclass(frozen=True)
-class GenericMask(DataSource, Generic[_M]):
+class GenericMask(DataSource[_M], Generic[_M]):
     """
     Provides a subclass with MINC volume mask related functions.
     """
@@ -55,7 +55,7 @@ class GenericMask(DataSource, Generic[_M]):
 
     def minccalc_u8(self, expression: str, *args: _O) -> _M:
         def run(input, output):
-            others: list[ContextManager[str | PathLike]] = [other.as_intermediate() for other in args]
+            others: list[ContextManager[str | PathLike]] = [other.intermediate_saved() for other in args]
             with ExitStack() as stack:
                 other_files = (stack.enter_context(o) for o in others)
                 cmd = [
@@ -64,14 +64,13 @@ class GenericMask(DataSource, Generic[_M]):
                     '-expression', expression,
                     input, *other_files, output
                 ]
-                print(f'running {cmd}')
                 sp.run(cmd, check=True)
 
         return self.append(run)
 
     def mincresample(self, like: _O) -> _O:
         def run(like_volume, output_file):
-            with self.as_intermediate() as input_file:
+            with self.intermediate_saved() as input_file:
                 cmd = [
                     'mincresample', '-clobber', '-quiet',
                     '-like', like_volume,

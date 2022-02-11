@@ -30,9 +30,9 @@ class GenericRegularSurface(GenericSurface[_RS], Generic[_RS]):
     a polygonal mesh of standard connectivity.
     """
 
-    def surface_mask2(self, in_volume: GenericMask[_M]) -> GenericMask[_M]:
+    def surface_mask2(self, in_volume: _M) -> _M:
         def run(given_volume, output):
-            with self.as_intermediate() as surface:
+            with self.intermediate_saved() as surface:
                 cmd = ['surface_mask2', given_volume, surface, output]
                 sp.run(cmd, check=True)
         return in_volume.append(run)

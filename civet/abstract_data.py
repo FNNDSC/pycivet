@@ -6,7 +6,7 @@ import dataclasses
 import shutil
 from os import path, PathLike
 from tempfile import NamedTemporaryFile
-from typing import ClassVar, Callable, ContextManager
+from typing import ClassVar, Callable, ContextManager, TypeVar, Generic
 from contextlib import contextmanager
 
 
@@ -49,10 +49,11 @@ class _StartingFile(_ISavable):
 
 
 RunFunction = Callable[[str | PathLike, str | PathLike], None]
+_D = TypeVar('_D', bound='DataSource')
 
 
 @dataclasses.dataclass(frozen=True)
-class DataSource(_ISavable):
+class DataSource(_ISavable, Generic[_D]):
     """
     A `DataSource` is a node of a linked-list representing a chain of programs
     which process data. It itself represents a data-processing program. The
@@ -99,13 +100,21 @@ class DataSource(_ISavable):
             raise NoOutputException()
 
     @contextmanager
-    def as_intermediate(self) -> ContextManager[str | PathLike]:
+    def intermediate_saved(self) -> ContextManager[str | PathLike]:
         """
         Produce the result of this source to a temporary file.
         """
         with NamedTemporaryFile(suffix=self.preferred_suffix) as output:
             self.save(output.name)
             yield output.name
+
+    @contextmanager
+    def intermediate_source(self) -> ContextManager[_D]:
+        """
+        Produce the result of this source, wrapped in its own type.
+        """
+        with self.intermediate_saved() as saved_file:
+            yield dataclasses.replace(self, input=saved_file, run=shutil.copyfile)
 
     def append(self, run: RunFunction):
         """
