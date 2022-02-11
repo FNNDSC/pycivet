@@ -1,70 +1,118 @@
 """
-Wrappers for data paths and programs which process data.
+Object-oriented wrappers for data paths and programs which process data.
 """
 import abc
+import dataclasses
 import shutil
-from dataclasses import dataclass
 from os import path, PathLike
 from tempfile import NamedTemporaryFile
+from typing import ClassVar, Callable
 
 
-class DataSource(abc.ABC):
+class _ISavable(abc.ABC):
     """
-    A `DataSource` is something which can provide data, such as an
-    input file, input directory, a command which processes input, or
-    a chain of commands. In the latter case, the commands are executed
-    "lazily" and will only actually run when `DataSource.save` is called.
-    Intermediate files are written to temporary files and then removed.
+    Linked-list node.
     """
-
-    preferred_suffix: str = ''
-    """
-    Preferred output file suffix.
-    """
-
     @abc.abstractmethod
     def save(self, output: PathLike | str) -> None:
         """
-        Resolve this data to a given path by executing the
-        represented operations.
+        Resolve this data to a given path by executing the represented operations.
         """
         ...
 
+    @property
+    def preferred_suffix(self) -> str:
+        """
+        :return: preferred file extension for this type
+        """
+        return ''
 
-@dataclass(frozen=True)
-class DataFile(DataSource):
+
+@dataclasses.dataclass(frozen=True)
+class _StartingFile(_ISavable):
     """
-    A wrapper around a file path.
+    Linked-list front node.
     """
-    input: str | PathLike
+
+    starting_file: str | PathLike
 
     def __post_init__(self):
-        if not path.exists(self.input):
-            raise FileNotFoundError(f'Input does not exist: {self.input}')
+        if not path.isfile(self.starting_file):
+            raise FileNotFoundError(f'Not a file: {self.starting_file}')
 
     def save(self, output: PathLike | str) -> None:
         """
-        Copy the file to a given destination.
+        Copy this input file to a path.
         """
-        shutil.copyfile(self.input, output)
+        shutil.copyfile(self.starting_file, output)
 
 
-@dataclass(frozen=True)
-class DataOperation(DataSource, abc.ABC):
+RunFunction = Callable[[str | PathLike, str | PathLike], None]
+
+
+@dataclasses.dataclass(frozen=True)
+class DataSource(_ISavable):
     """
-    A recursive data structure representing an operation to perform on input data.
+    A `DataSource` is a node of a linked-list representing a chain of programs
+    which process data. It itself represents a data-processing program. The
+    front of this linked-list is an input file.
+
+    Its operation is lazy and the programs are only run when `DataSource.save`
+    is called.
     """
 
-    input: DataSource
+    input: dataclasses.InitVar[str | PathLike | _ISavable]
+    """
+    Input data for this `DataSource`.
+    """
+    prev: ClassVar[_ISavable]
+    run: RunFunction = shutil.copyfile
+    """
+    A function which defines the program for this `DataSource`.
+    """
+    require_output: bool = True
+    """
+    If `True`, raises `NoOutputException` when calling `run` does not create
+    output at the path it was given.
+    """
 
-    @abc.abstractmethod
-    def run(self, input: str | PathLike, output: str | PathLike):
-        ...
+    def __post_init__(self, input: str | PathLike | _ISavable):
+        if isinstance(input, _ISavable):
+            object.__setattr__(self, 'prev', input)
+        elif isinstance(input, str) or isinstance(input, PathLike):
+            object.__setattr__(self, 'prev', _StartingFile(input))
+        else:
+            raise TypeError(f'{input} ({type(input)}')
 
     def save(self, output: str | PathLike):
         """
-        Perform the operation on its input data.
+        Call `save` on all previous `DataSource` before this one, writing
+        intermediate outputs to temporary files. After that, invoke this
+        object's `run` method on the given `output` path.
         """
-        with NamedTemporaryFile(suffix=self.input.preferred_suffix) as real_input:
-            self.input.save(real_input.name)
+        with NamedTemporaryFile(suffix=self.prev.preferred_suffix) as real_input:
+
+            print(f'{self}, {real_input.name} -> {output}')
+
+            self.prev.save(real_input.name)
             self.run(real_input.name, output)
+
+        if self.require_output and not path.exists(output):
+            raise NoOutputException()
+
+    def append(self, run: RunFunction):
+        """
+        Append a program to this linked-list.
+
+        Returns
+        -------
+        next : the `DataSource` representing the just-added program
+        """
+        return dataclasses.replace(self, input=self, run=run)
+
+
+class NoOutputException(Exception):
+    """
+    Raised when a program fails to write an output file to its given output path.
+    """
+    pass

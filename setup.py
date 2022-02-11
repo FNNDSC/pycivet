@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 import shutil
 
@@ -14,8 +14,8 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pycivet',
-    version='0.0.1a1',
-    description='CIVET bindings',
+    version='0.0.1a2',
+    description='Object-oriented CIVET bindings for Python',
     long_description=readme,
     long_description_content_type='text/markdown',
     author='Jennings Zhang',
@@ -27,7 +27,7 @@ setup(
         'Tracker': 'https://github.com/FNNDSC/pycivet/issues',
     },
     license='MIT',
-    packages=['civet'],
+    packages=find_packages(exclude='*.tests.*'),
     python_requires='>=3.10.2',
     classifiers=[
         'License :: OSI Approved :: MIT License',

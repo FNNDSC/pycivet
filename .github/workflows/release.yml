@@ -29,9 +29,23 @@ jobs:
   docs:
     name: Build docs for Github Pages
     runs-on: ubuntu-latest
+    env:
+      MNI_DATAPATH: /opt/CIVET/dist/share
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+        # For pdoc to resolve the defined constants, these files need to exist
+      - name: Download surface-extraction models
+        uses: actions/checkout@v2
+        with:
+          path: surface-extraction
+          repository: aces/surface-extraction
+      - name: Setup data
+        run: |
+          sudo mkdir -pv $MNI_DATAPATH/surface-extraction
+          sudo cp -rv surface-extraction/models $MNI_DATAPATH/surface-extraction
+
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
