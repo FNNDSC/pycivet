@@ -41,10 +41,10 @@ jobs:
         with:
           path: surface-extraction
           repository: aces/surface-extraction
-      - name: Setup data
+      - name: Copy data to MNI_DATAPATH
         run: |
           sudo mkdir -pv $MNI_DATAPATH/surface-extraction
-          sudo cp -rv surface-extraction/models $MNI_DATAPATH/surface-extraction
+          sudo cp -v surface-extraction/models/* $MNI_DATAPATH/surface-extraction
 
       - name: Setup Python
         uses: actions/setup-python@v2
