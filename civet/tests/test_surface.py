@@ -14,7 +14,7 @@ def tmp_obj(tmp_path: Path) -> Path:
 
 @pytest.fixture()
 def surf(tmp_obj: Path) -> Surface:
-    return Surface(tmp_obj, require_output=False)
+    return Surface(tmp_obj)
 
 
 @pytest.fixture()

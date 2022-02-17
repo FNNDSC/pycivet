@@ -11,12 +11,12 @@ Mask('wm.mnc').reshape_bbox().save('bounded.wm.mnc')
 ```
 """
 
+from pathlib import Path
 from os import PathLike
 from dataclasses import dataclass
 import subprocess as sp
 from civet.abstract_data import DataSource
-from typing import TypeVar, Generic, ContextManager, Literal, Optional
-from contextlib import ExitStack
+from typing import TypeVar, Generic, Literal, Optional
 
 
 _M = TypeVar('_M', bound='GenericMask')
@@ -38,70 +38,78 @@ class GenericMask(DataSource[_M], Generic[_M]):
         mincreshape -quiet -clobber $(mincbbox -mincreshape in.mnc) in.mnc out.mnc
         ```
         """
-        def run(input: str | PathLike, output: str | PathLike) -> None:
-            cmd = [
+        def run(inputs: tuple[Path], output: str) -> list[str | PathLike]:
+            vol, = inputs
+            return [
                 'mincreshape', '-quiet', '-clobber',
-                *self._mincbbox(input), input, output
+                *self._mincbbox(vol), vol, output
             ]
-            sp.run(cmd, check=True)
 
         return self.append(run)
 
     @staticmethod
-    def _mincbbox(input: str | PathLike) -> list[str]:
+    def _mincbbox(input: PathLike) -> list[str]:
         result = sp.check_output(['mincbbox', '-mincreshape', input])
         decoded = result.decode(encoding='utf-8')
         return decoded.split(' ')
 
     def minccalc_u8(self, expression: str, *args: _O) -> _M:
-        def run(input, output):
-            others: list[ContextManager[str | PathLike]] = [other.intermediate_saved() for other in args]
-            with ExitStack() as stack:
-                other_files = (stack.enter_context(o) for o in others)
-                cmd = [
-                    'minccalc', '-clobber', '-quiet',
-                    '-unsigned', '-byte',
-                    '-expression', expression,
-                    input, *other_files, output
-                ]
-                sp.run(cmd, check=True)
+        """
+        Runs
 
-        return self.append(run)
+        ```shell
+        minccalc -quiet -unsigned -byte -expression ... inputs ...
+        ```
+
+        Examples
+        --------
+
+        ```python
+        MaskFile('one.mnc').minccalc_u8('A[0]+A[1]', MaskFile('two.mnc')).save('overlap.mnc')
+        ```
+        """
+        def run(inputs: tuple[Path, ...], output: str) -> list[str | PathLike]:
+            return [
+                'minccalc', '-clobber', '-quiet',
+                '-unsigned', '-byte',
+                '-expression', expression,
+                *inputs, output
+            ]
+        return self.append_join(run, (self, *args))
 
     def mincresample(self, like: _O) -> _O:
-        def run(like_volume, output_file):
-            with self.intermediate_saved() as input_file:
-                cmd = [
-                    'mincresample', '-clobber', '-quiet',
-                    '-like', like_volume,
-                    input_file, output_file
-                ]
-                sp.run(cmd, check=True)
-
+        def run(inputs: tuple[Path, Path], output_file: str) -> list[str | PathLike]:
+            input_file, like_volume = inputs
+            return [
+                'mincresample', '-clobber', '-quiet',
+                '-like', like_volume,
+                input_file, output_file
+            ]
         return like.append(run)
 
     def dilate_volume(self, dilation_value: int, neighbors: Literal[6, 26], n_dilations: int) -> _M:
-        def run(input, output):
-            cmd = ['dilate_volume', input, output, str(dilation_value), str(neighbors), str(n_dilations)]
-            sp.run(cmd, check=True)
+        def run(inputs: tuple[Path], output: str) -> list[str | PathLike]:
+            return [
+                'dilate_volume', inputs[0], output,
+                str(dilation_value), str(neighbors), str(n_dilations)
+            ]
         return self.append(run)
 
     def reshape255(self) -> _M:
-        def run(input, output):
-            cmd = [
+        def run(inputs: tuple[Path], output: str) -> list[str | PathLike]:
+            return [
                 'mincreshape', '-quiet', '-clobber', '-unsigned', '-byte',
                 '-image_range', '0', '255', '-valid_range', '0', '255',
-                input, output
+                inputs[0], output
             ]
-            sp.run(cmd, check=True)
         return self.append(run)
 
     def mincdefrag(self, label: int, stencil: Literal[6, 19, 27], max_connect: Optional[int] = None) -> _M:
-        def run(input, output):
-            cmd = ['mincdefrag', input, output, str(label), str(stencil)]
+        def run(inputs: tuple[Path], output: str) -> list[str | PathLike]:
+            cmd = ['mincdefrag', inputs[0], output, str(label), str(stencil)]
             if max_connect is not None:
                 cmd.append(str(max_connect))
-            sp.run(cmd, check=True)
+            return cmd
         return self.append(run)
 
 
@@ -116,6 +124,7 @@ class Mask(GenericMask['Mask']):
     from civet import MaskFile
 
     MaskFile('mask.mnc').reshape_bbox().save('bounded.mnc')
+    MaskFile('one.mnc').minccalc_u8('A[0]||A[1]', MaskFile('two.mnc')).save('union.mnc')
     ```
     """
     pass

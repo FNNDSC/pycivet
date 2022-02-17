@@ -2,9 +2,20 @@ from civet.mask import Mask, GenericMask
 from civet.extraction.surfaces import IrregularSurface
 from civet.extraction.starting_models import WHITE_MODEL_320, SurfaceModel
 from enum import Enum
-from typing import TypeVar, Generic, Optional
-import subprocess as sp
+from typing import TypeVar, Generic, Optional, ContextManager
+from civet.abstract_data import CompositeIntermediate
+from dataclasses import dataclass
 from contextlib import contextmanager
+
+
+@dataclass(frozen=True)
+class SphereMeshMask(CompositeIntermediate['SphereMeshMask']):
+    def resolve(self):
+        ...
+
+
+
+
 
 
 class Side(Enum):
@@ -47,29 +58,26 @@ class GenericHemisphere(GenericMask[_M], Generic[_M]):
         and then execute `sphere_mesh`.
         """
         def run(mask_file, surface):
-            with self.prepare_mask_for_sphere_mesh(Mask(mask_file), initial_model) as sphere_mask:
+            with self.prepare_for_sphere_mesh(initial_model) as sphere_mask:
                 sp.run(['sphere_mesh', sphere_mask, surface], stdout=stdout, stderr=stderr, check=True)
 
-        # watch out: can't use something.append because we're changing file types,
-        # attributes are not going to be copied automatically
         return IrregularSurface(
             self, run=run, require_output=self.require_output
         )
 
-    @staticmethod
-    @contextmanager
-    def prepare_mask_for_sphere_mesh(mask: Mask, initial_model: SurfaceModel):
+    def prepare_for_sphere_mesh(self, initial_model: SurfaceModel):
         """
         https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L189-L207
         """
-        with mask.minccalc_u8('out=1').intermediate_source() as filled:
-            with initial_model.surface_mask2(filled).intermediate_source() as surface_mask_vol:
-                resampled = surface_mask_vol.mincresample(filled)
-                overlap = mask.minccalc_u8('if(A[0]>0.5||A[1]>0.5){1}else{0}', resampled)
-                dilated = overlap.dilate_volume(1, 26, 1)
-                added = mask.minccalc_u8('A[0]+A[1]', dilated)
-                with added.reshape255().mincdefrag(2, 19).intermediate_saved() as sphere_mask:
-                    yield sphere_mask
+        with self.intermediate_source() as mask,\
+                mask.minccalc_u8('out=1').intermediate_source() as filled,\
+                initial_model.surface_mask2(filled).intermediate_source() as surface_mask_vol:
+            resampled = surface_mask_vol.mincresample(filled)
+            overlap = mask.minccalc_u8('if(A[0]>0.5||A[1]>0.5){1}else{0}', resampled)
+            dilated = overlap.dilate_volume(1, 26, 1)
+            added = mask.minccalc_u8('A[0]+A[1]', dilated)
+            with added.reshape255().mincdefrag(2, 19).intermediate_saved() as sphere_mask:
+                yield sphere_mask
 
 
 class HemisphereMask(GenericHemisphere['HemisphereMask']):

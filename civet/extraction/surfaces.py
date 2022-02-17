@@ -1,5 +1,6 @@
+from os import PathLike
+from pathlib import Path
 from typing import Generic, TypeVar
-import subprocess as sp
 from civet.obj import GenericSurface
 from civet.mask import GenericMask
 
@@ -31,11 +32,10 @@ class GenericRegularSurface(GenericSurface[_RS], Generic[_RS]):
     """
 
     def surface_mask2(self, in_volume: _M) -> _M:
-        def run(given_volume, output):
-            with self.intermediate_saved() as surface:
-                cmd = ['surface_mask2', given_volume, surface, output]
-                sp.run(cmd, check=True)
-        return in_volume.append(run)
+        def run(inputs: tuple[Path, Path], output: str) -> list[str | PathLike]:
+            surface, given_volume = inputs
+            return ['surface_mask2', given_volume, surface, output]
+        return in_volume.append_join(run, inputs=(self, in_volume))
 
 
 class RegularSurface(GenericRegularSurface['RegularSurface']):
