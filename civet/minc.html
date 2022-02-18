@@ -52,6 +52,9 @@
                                 <a class="function" href="#GenericMask.mincdefrag">mincdefrag</a>
                         </li>
                         <li>
+                                <a class="function" href="#GenericMask.mincblur">mincblur</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#GenericMask.reshape255">reshape255</a>
                         </li>
                         <li>
@@ -69,7 +72,7 @@
     </ul>
 
 
-            <footer>Version v0.0.2a1</footer>
+            <footer>Version v0.0.2a2</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -135,6 +138,13 @@
             <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_connect</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">cmd</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="c1"># reult is not a binary mask, it has float values in [0, 1],</span>
+        <span class="c1"># maybe define a unique type?</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;mincblur&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
@@ -211,6 +221,13 @@
             <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">cmd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_connect</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">cmd</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="c1"># reult is not a binary mask, it has float values in [0, 1],</span>
+        <span class="c1"># maybe define a unique type?</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;mincblur&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
@@ -367,6 +384,29 @@
     
 
                             </div>
+                            <div id="GenericMask.mincblur" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.mincblur">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">mincblur</span><span class="signature">(self, fwhm: int) -&gt; ~_M</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+        <span class="c1"># reult is not a binary mask, it has float values in [0, 1],</span>
+        <span class="c1"># maybe define a unique type?</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;mincblur&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div id="GenericMask.reshape255" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#GenericMask.reshape255">#&nbsp;&nbsp</a>
 
@@ -462,6 +502,7 @@
                 <dd id="Mask.mincresample" class="function"><a href="#GenericMask.mincresample">mincresample</a></dd>
                 <dd id="Mask.minccalc_u8" class="function"><a href="#GenericMask.minccalc_u8">minccalc_u8</a></dd>
                 <dd id="Mask.mincdefrag" class="function"><a href="#GenericMask.mincdefrag">mincdefrag</a></dd>
+                <dd id="Mask.mincblur" class="function"><a href="#GenericMask.mincblur">mincblur</a></dd>
                 <dd id="Mask.reshape255" class="function"><a href="#GenericMask.reshape255">reshape255</a></dd>
                 <dd id="Mask.reshape_bbox" class="function"><a href="#GenericMask.reshape_bbox">reshape_bbox</a></dd>
 

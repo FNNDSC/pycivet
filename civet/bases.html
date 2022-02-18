@@ -57,7 +57,7 @@
     </ul>
 
 
-            <footer>Version v0.0.2a1</footer>
+            <footer>Version v0.0.2a2</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -110,8 +110,9 @@
 <span class="sd">        with log_path.open(&#39;wb&#39;) as log_file:</span>
 <span class="sd">            def saves_log_shell(cmd):</span>
 <span class="sd">                log_file.write(b&#39;Running: &#39;)</span>
-<span class="sd">                log_file.write(b&#39; &#39;.join(map(bytes, cmd)))</span>
+<span class="sd">                log_file.write(str(cmd).encode(&#39;utf-8&#39;))</span>
 <span class="sd">                log_file.write(b&#39;\n&#39;)</span>
+<span class="sd">                log_file.flush()</span>
 <span class="sd">                sp.run(cmd, stdout=log_file, stderr=sp.STDOUT, check=True)</span>
 <span class="sd">            GenericSurface(&#39;input.obj&#39;).slide_left().save(&#39;lefter.obj&#39;, shell=saves_log_shell)</span>
 <span class="sd">        ```</span>
@@ -184,8 +185,9 @@
 <span class="sd">        with log_path.open(&#39;wb&#39;) as log_file:</span>
 <span class="sd">            def saves_log_shell(cmd):</span>
 <span class="sd">                log_file.write(b&#39;Running: &#39;)</span>
-<span class="sd">                log_file.write(b&#39; &#39;.join(map(bytes, cmd)))</span>
+<span class="sd">                log_file.write(str(cmd).encode(&#39;utf-8&#39;))</span>
 <span class="sd">                log_file.write(b&#39;\n&#39;)</span>
+<span class="sd">                log_file.flush()</span>
 <span class="sd">                sp.run(cmd, stdout=log_file, stderr=sp.STDOUT, check=True)</span>
 <span class="sd">            GenericSurface(&#39;input.obj&#39;).slide_left().save(&#39;lefter.obj&#39;, shell=saves_log_shell)</span>
 <span class="sd">        ```</span>
@@ -233,8 +235,9 @@ which is an alias for typical usage of <code><a href="memoization.html#Session">
 <span class="sd">        with log_path.open(&#39;wb&#39;) as log_file:</span>
 <span class="sd">            def saves_log_shell(cmd):</span>
 <span class="sd">                log_file.write(b&#39;Running: &#39;)</span>
-<span class="sd">                log_file.write(b&#39; &#39;.join(map(bytes, cmd)))</span>
+<span class="sd">                log_file.write(str(cmd).encode(&#39;utf-8&#39;))</span>
 <span class="sd">                log_file.write(b&#39;\n&#39;)</span>
+<span class="sd">                log_file.flush()</span>
 <span class="sd">                sp.run(cmd, stdout=log_file, stderr=sp.STDOUT, check=True)</span>
 <span class="sd">            GenericSurface(&#39;input.obj&#39;).slide_left().save(&#39;lefter.obj&#39;, shell=saves_log_shell)</span>
 <span class="sd">        ```</span>
@@ -257,8 +260,9 @@ wrappers around <code>subprocess.run</code>. For example, to save the logs of su
 <span class="k">with</span> <span class="n">log_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log_file</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">saves_log_shell</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
         <span class="n">log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;Running: &#39;</span><span class="p">)</span>
-        <span class="n">log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)))</span>
+        <span class="n">log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="n">log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">GenericSurface</span><span class="p">(</span><span class="s1">&#39;input.obj&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">slide_left</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;lefter.obj&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="n">saves_log_shell</span><span class="p">)</span>
 </code></pre></div>
