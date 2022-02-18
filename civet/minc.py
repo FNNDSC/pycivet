@@ -47,6 +47,13 @@ class GenericMask(DataFile[_M], Generic[_M]):
             return cmd
         return self.create_command(command)
 
+    def mincblur(self, fwhm: int) -> _M:
+        # reult is not a binary mask, it has float values in [0, 1],
+        # maybe define a unique type?
+        def command(output):
+            return ('mincblur', '-fwhm', str(fwhm), self, output)
+        return self.create_command(command)
+
     def reshape255(self) -> _M:
         def command(output):
             return (
