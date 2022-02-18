@@ -20,5 +20,9 @@ jobs:
           pip install -e .
           pip install pytest pytest_mock
       - run: pytest
+        # Dummy variable.
+        # Note to future self: if things stop working, try populating
+        # MNI_DATAPATH with the expected real data such as
+        # surface-extraction/white_model_320.obj
         env:
           MNI_DATAPATH: /usr/local/share
