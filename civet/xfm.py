@@ -1,8 +1,13 @@
+"""
+Types related to xfm transformations
+(`param2xfm`, `transform_objects`, `transform_volume`).
+"""
 import abc
-from pathlib import Path
-from typing import Literal, TypeVar
+from os import PathLike
+from typing import Sequence, TypeVar, Literal
+from civet.abstract_data import AbstractDataCommand
+from civet.bases import DataSource, DataFile
 from enum import Enum
-from civet.abstract_data import Creator, DataSource
 from dataclasses import dataclass
 
 
@@ -15,7 +20,7 @@ class Transformations(Enum):
 
 
 @dataclass(frozen=True)
-class Xfm(Creator['Xfm']):
+class Xfm(DataSource):
     """
     Represents a `.xfm` file created by `param2xfm`.
 
@@ -27,17 +32,18 @@ class Xfm(Creator['Xfm']):
     x: float
     y: float
     z: float
+    preferred_suffix = '.xfm'
 
-    def command(self, output: str) -> list[str]:
-        return ['param2xfm', '-clobber', self.transformation.name,
-                self.x, self.y, self.z, output]
+    def command(self, output: str | PathLike) -> Sequence[str | PathLike | AbstractDataCommand]:
+        return 'param2xfm', self.transformation.value, str(self.x), str(self.y), str(self.z), output
 
 
 TransformProgram = Literal['transform_objects', 'transform_volume']
-_T = TypeVar('_T', bound='Transformable')
+_T = TypeVar('_T', bound='TransformableMixin')
 
 
-class Transformable(DataSource[_T], abc.ABC):
+@dataclass(frozen=True)
+class TransformableMixin(DataFile[_T], abc.ABC):
     @property
     @abc.abstractmethod
     def transform_program(self) -> TransformProgram:
@@ -46,11 +52,10 @@ class Transformable(DataSource[_T], abc.ABC):
         """
         ...
 
-    def append_xfm(self, xfm: Xfm):
-        def apply_xfm(inputs: tuple[Path, Path], output: str) -> list[str | Path]:
-            input_obj, saved_xfm = inputs
-            return [self.transform_program, input_obj, saved_xfm, output]
-        return self.append_join(apply_xfm, inputs=(self, xfm))
+    def append_xfm(self, xfm: Xfm) -> _T:
+        def command(output: str | PathLike) -> Sequence[str | PathLike | AbstractDataCommand]:
+            return self.transform_program, self, xfm, output
+        return self.create_command(command)
 
     def flip_x(self) -> _T:
         """

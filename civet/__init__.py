@@ -1,18 +1,24 @@
 """
-Object-oriented Python bindings for CIVET binaries such as
-`transform_objects` and `mincreshape`.
+Object-oriented bindings for
+[CIVET](http://www.bic.mni.mcgill.ca/ServicesSoftware/CIVET).
+
+See [https://pypi.org/project/pycivet/](https://pypi.org/project/pycivet/)
+for a description and examples.
 """
 
-import civet.abstract_data as abstract_data
-import civet.obj as obj
-import civet.mask as mask
-import civet.extraction as extraction
+import civet.extraction.starting_models as starting_models
 
 __docformat__ = 'numpy'
 
 __all__ = [
-    'obj',
-    'mask',
     'extraction',
-    'abstract_data'
+    'minc',
+    'obj',
+    'xfm',
+    'starting_models',
+    'globals',
+    'bases',
+    'memoization',
+    'abstract_data',
+    'memoization',
 ]

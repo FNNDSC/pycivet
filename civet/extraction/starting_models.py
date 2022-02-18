@@ -1,17 +1,16 @@
 """
-Surface model files. These are typically the starting point
-for surface extraction algorithms.
+Data from the `$MNI_DATAPATH/surface-extraction` directory.
 """
-
-from os import PathLike
+from civet.extraction.surfaces import RegularSurface
 from civet.globals import MNI_DATAPATH
-from civet.extraction.surfaces import GenericRegularSurface
 
 
-class SurfaceModel(GenericRegularSurface['SurfaceModel']):
-
+class SurfaceModel(RegularSurface['SurfaceModel']):
+    """
+    Represents a surface data file from the `$MNI_DATAPATH/surface-extraction` directory.
+    """
     @classmethod
-    def get_model(cls, name: str | PathLike) -> 'SurfaceModel':
+    def get_model(cls, name: str) -> 'SurfaceModel':
         return cls(MNI_DATAPATH / 'surface-extraction' / name)
 
 

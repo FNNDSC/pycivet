@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 import os
 import shutil
+import glob
 
 if 'CI' not in os.environ and not shutil.which('adapt_object_mesh'):
     raise Exception(
@@ -14,7 +15,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pycivet',
-    version='0.0.1a7',
+    version='0.0.2a1',
     description='Object-oriented CIVET bindings for Python',
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -35,5 +36,6 @@ setup(
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Medical Science Apps.'
-    ]
+    ],
+    scripts=glob.glob('scripts/*')
 )
