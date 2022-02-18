@@ -32,8 +32,9 @@ class DataSource(AbstractDataCommand, abc.ABC):
         with log_path.open('wb') as log_file:
             def saves_log_shell(cmd):
                 log_file.write(b'Running: ')
-                log_file.write(b' '.join(map(bytes, cmd)))
+                log_file.write(str(cmd).encode('utf-8'))
                 log_file.write(b'\n')
+                log_file.flush()
                 sp.run(cmd, stdout=log_file, stderr=sp.STDOUT, check=True)
             GenericSurface('input.obj').slide_left().save('lefter.obj', shell=saves_log_shell)
         ```
