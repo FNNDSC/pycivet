@@ -15,7 +15,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pycivet',
-    version='0.0.2a2',
+    version='0.0.3',
     description='Object-oriented CIVET bindings for Python',
     long_description=readme,
     long_description_content_type='text/markdown',
