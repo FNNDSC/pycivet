@@ -31,9 +31,6 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
-                    <a class="function" href="#subprocess_run">subprocess_run</a>
-            </li>
-            <li>
                     <a class="class" href="#Memoizer">Memoizer</a>
                             <ul class="memberlist">
                         <li>
@@ -72,7 +69,7 @@
     </ul>
 
 
-            <footer>Version v0.0.4</footer>
+            <footer>Version v0.0.5</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -95,22 +92,16 @@
 <span class="sd">Manual control of memoization features.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ContextManager</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">NewType</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span><span class="p">,</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ContextManager</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">NewType</span>
+
 <span class="kn">from</span> <span class="nn">civet.abstract_data</span> <span class="kn">import</span> <span class="n">AbstractDataCommand</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">civet.shells</span> <span class="kn">import</span> <span class="n">Shell</span><span class="p">,</span> <span class="n">subprocess_run</span>
 
 <span class="n">_IntermediatePath</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;IntermediatePath&#39;</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">subprocess_run</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Alias for `subprocess.run(cmd, check=True)`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -134,7 +125,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">temp_dir</span><span class="p">:</span> <span class="n">Path</span>
-    <span class="n">shell</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">shell</span><span class="p">:</span> <span class="n">Shell</span>
     <span class="n">require_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">AbstractDataCommand</span><span class="p">,</span> <span class="n">_IntermediatePath</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
@@ -204,7 +195,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If True, raise `NoOutputError` if a command fails to produce output to its given path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">shell</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">subprocess_run</span>
+    <span class="n">shell</span><span class="p">:</span> <span class="n">Shell</span> <span class="o">=</span> <span class="n">subprocess_run</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A function which executes its parameters as a subprocess.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -228,30 +219,6 @@
         </details>
 
             </section>
-                <section id="subprocess_run">
-                            <div class="attr function"><a class="headerlink" href="#subprocess_run">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">subprocess_run</span><span class="signature">(cmd: Sequence[Union[str, os.PathLike]]) -&gt; None</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">subprocess_run</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Alias for `subprocess.run(cmd, check=True)`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Alias for <code>subprocess.run(cmd, check=True)</code></p>
-</div>
-
-
-                </section>
                 <section id="Memoizer">
                                 <div class="attr class">
         <a class="headerlink" href="#Memoizer">#&nbsp;&nbsp</a>
@@ -285,7 +252,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">temp_dir</span><span class="p">:</span> <span class="n">Path</span>
-    <span class="n">shell</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">shell</span><span class="p">:</span> <span class="n">Shell</span>
     <span class="n">require_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">AbstractDataCommand</span><span class="p">,</span> <span class="n">_IntermediatePath</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
@@ -371,7 +338,7 @@ necessary to compute the root.</p>
         
             <span class="name">Memoizer</span><span class="signature">(
     temp_dir: pathlib.Path,
-    shell: Callable[[Sequence[str | os.PathLike[str]]], NoneType],
+    shell: Callable[[Sequence[Union[str, os.PathLike]]], NoneType],
     require_output: bool = True
 )</span>
     </div>
@@ -445,7 +412,7 @@ Else, compute <code>d</code>, cache the result, and copy to <code>output</code>.
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If True, raise `NoOutputError` if a command fails to produce output to its given path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">shell</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">subprocess_run</span>
+    <span class="n">shell</span><span class="p">:</span> <span class="n">Shell</span> <span class="o">=</span> <span class="n">subprocess_run</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A function which executes its parameters as a subprocess.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -506,7 +473,7 @@ Else, compute <code>d</code>, cache the result, and copy to <code>output</code>.
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Alias for `subprocess.run(cmd, check=True)`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
         </details>
