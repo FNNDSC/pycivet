@@ -63,12 +63,39 @@
             <li>
                     <a class="class" href="#RegularSurface">RegularSurface</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#RegularSurface.create_tetra">create_tetra</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#IrregularSurface">IrregularSurface</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#IrregularSurface.interpolate_with_sphere">interpolate_with_sphere</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#Tetra">Tetra</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Tetra.__init__">Tetra</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Tetra.center">center</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Tetra.radius">radius</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Tetra.triangles">triangles</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Tetra.command">command</a>
+                        </li>
                 </ul>
 
             </li>
@@ -84,7 +111,7 @@
     </ul>
 
 
-            <footer>Version v0.0.5</footer>
+            <footer>Version v0.0.6</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -109,8 +136,9 @@ surface-extraction subroutines of the CIVET pipeline.</p>
 <span class="sd">surface-extraction subroutines of the CIVET pipeline.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">civet.extraction.hemisphere</span> <span class="kn">import</span> <span class="n">HemisphereMask</span><span class="p">,</span> <span class="n">Side</span>
-<span class="kn">from</span> <span class="nn">civet.extraction.surfaces</span> <span class="kn">import</span> <span class="n">RegularSurface</span><span class="p">,</span> <span class="n">IrregularSurface</span>
+<span class="kn">from</span> <span class="nn">civet.extraction.side</span> <span class="kn">import</span> <span class="n">Side</span>
+<span class="kn">from</span> <span class="nn">civet.extraction.hemisphere</span> <span class="kn">import</span> <span class="n">HemisphereMask</span>
+<span class="kn">from</span> <span class="nn">civet.extraction.surfaces</span> <span class="kn">import</span> <span class="n">RegularSurface</span><span class="p">,</span> <span class="n">IrregularSurface</span><span class="p">,</span> <span class="n">Tetra</span>
 <span class="kn">from</span> <span class="nn">civet.extraction.starting_models</span> <span class="kn">import</span> <span class="n">SurfaceModel</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -118,6 +146,7 @@ surface-extraction subroutines of the CIVET pipeline.</p>
     <span class="s1">&#39;Side&#39;</span><span class="p">,</span>
     <span class="s1">&#39;RegularSurface&#39;</span><span class="p">,</span>
     <span class="s1">&#39;IrregularSurface&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Tetra&#39;</span><span class="p">,</span>
     <span class="s1">&#39;SurfaceModel&#39;</span>
 <span class="p">]</span>
 </pre></div>
@@ -141,7 +170,7 @@ surface-extraction subroutines of the CIVET pipeline.</p>
 <span class="sd">    Represents a binary mask of a brain hemisphere (either left or right).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">just_sphere_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">just_sphere_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Just run `sphere_mesh`, which produces a mesh with non-standard connectivity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -216,13 +245,13 @@ surface-extraction subroutines of the CIVET pipeline.</p>
             <span class="def">def</span>
             <span class="name">just_sphere_mesh</span><span class="signature">(
     self,
-    side: Optional[<a href="#Side">civet.extraction.Side</a>]
+    side: Optional[<a href="#Side">civet.extraction.Side</a>] = None
 ) -&gt; <a href="#IrregularSurface">civet.extraction.IrregularSurface</a></span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">just_sphere_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">just_sphere_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IrregularSurface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Just run `sphere_mesh`, which produces a mesh with non-standard connectivity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -478,7 +507,9 @@ This is a preprocessing step to <code>sphere_mesh</code>.</p>
 <span class="sd">    polygonal mesh of *N* triangles where 320 and 4 are common</span>
 <span class="sd">    denominators of *N*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_tetra</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tetra</span><span class="p">:</span> <span class="n">Tetra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;RegularSurface[RegularSurface]&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tetra</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -495,6 +526,30 @@ denominators of <em>N</em>.</p>
 </div>
 
 
+                            <div id="RegularSurface.create_tetra" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RegularSurface.create_tetra">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@classmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">create_tetra</span><span class="signature">(
+    cls,
+    tetra: <a href="#Tetra">civet.extraction.Tetra</a>
+) -&gt; <a href="#RegularSurface">civet.extraction.RegularSurface</a>[<a href="#RegularSurface">civet.extraction.RegularSurface</a>]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_tetra</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tetra</span><span class="p">:</span> <span class="n">Tetra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;RegularSurface[RegularSurface]&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tetra</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -540,7 +595,18 @@ denominators of <em>N</em>.</p>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a mesh (`.obj`) with irregular connectivity.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">interpolate_with_sphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegularSurface</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resample this surface to have a standard number of 81,920 triangles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">class</span> <span class="nc">InterpolatedFromSphere</span><span class="p">(</span><span class="n">RegularSurface</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span> <span class="o">|</span> <span class="n">AbstractDataCommand</span><span class="p">]:</span>
+                <span class="n">side_option</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">side_option</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">side</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+                <span class="k">return</span> <span class="s1">&#39;interpolate_surface_with_sphere.pl&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">side_option</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="n">InterpolatedFromSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -549,6 +615,40 @@ denominators of <em>N</em>.</p>
 </div>
 
 
+                            <div id="IrregularSurface.interpolate_with_sphere" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#IrregularSurface.interpolate_with_sphere">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">interpolate_with_sphere</span><span class="signature">(
+    self,
+    side: Optional[<a href="#Side">civet.extraction.Side</a>] = None
+) -&gt; <a href="#RegularSurface">civet.extraction.RegularSurface</a></span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">interpolate_with_sphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Side</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegularSurface</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resample this surface to have a standard number of 81,920 triangles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">class</span> <span class="nc">InterpolatedFromSphere</span><span class="p">(</span><span class="n">RegularSurface</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span> <span class="o">|</span> <span class="n">AbstractDataCommand</span><span class="p">]:</span>
+                <span class="n">side_option</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">side</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">side_option</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">side</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+                <span class="k">return</span> <span class="s1">&#39;interpolate_surface_with_sphere.pl&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">side_option</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="n">InterpolatedFromSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Resample this surface to have a standard number of 81,920 triangles.</p>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -574,6 +674,113 @@ denominators of <em>N</em>.</p>
             </div>
             <div><dt><a href="bases.html#DataSource">civet.bases.DataSource</a></dt>
                                 <dd id="IrregularSurface.save" class="function"><a href="bases.html#DataSource.save">save</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="Tetra">
+                                <div class="attr class">
+        <a class="headerlink" href="#Tetra">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@dataclass(frozen=True)</div>
+
+        <span class="def">class</span>
+        <span class="name">Tetra</span><wbr>(<span class="base"><a href="bases.html#DataSource">civet.bases.DataSource</a></span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Tetra</span><span class="p">(</span><span class="n">DataSource</span><span class="p">):</span>
+
+    <span class="n">center</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">radius</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">triangles</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">81920</span>
+
+    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="s1">&#39;create_tetra&#39;</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Tetra(center: tuple[float, float, float] = (0.0, 0.0, 0.0), radius: tuple[float, float, float] = (1.0, 1.0, 1.0), triangles: int = 81920)</p>
+</div>
+
+
+                            <div id="Tetra.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Tetra.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Tetra</span><span class="signature">(
+    center: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    radius: tuple[float, float, float] = (1.0, 1.0, 1.0),
+    triangles: int = 81920
+)</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="Tetra.center" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Tetra.center">#&nbsp;&nbsp</a>
+
+        <span class="name">center</span><span class="annotation">: tuple[float, float, float]</span><span class="default_value"> = (0.0, 0.0, 0.0)</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="Tetra.radius" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Tetra.radius">#&nbsp;&nbsp</a>
+
+        <span class="name">radius</span><span class="annotation">: tuple[float, float, float]</span><span class="default_value"> = (1.0, 1.0, 1.0)</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="Tetra.triangles" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Tetra.triangles">#&nbsp;&nbsp</a>
+
+        <span class="name">triangles</span><span class="annotation">: int</span><span class="default_value"> = 81920</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="Tetra.command" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Tetra.command">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">command</span><span class="signature">(self, output: str | os.PathLike) -&gt; Sequence[Union[str, os.PathLike]]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="s1">&#39;create_tetra&#39;</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="bases.html#DataSource">civet.bases.DataSource</a></dt>
+                                <dd id="Tetra.save" class="function"><a href="bases.html#DataSource.save">save</a></dd>
+
+            </div>
+            <div><dt><a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a></dt>
+                                <dd id="Tetra.preferred_suffix" class="variable"><a href="abstract_data.html#AbstractDataCommand.preferred_suffix">preferred_suffix</a></dd>
 
             </div>
                                 </dl>
@@ -634,6 +841,10 @@ denominators of <em>N</em>.</p>
                 <dd id="SurfaceModel.preferred_suffix" class="variable"><a href="obj.html#GenericSurface.preferred_suffix">preferred_suffix</a></dd>
                 <dd id="SurfaceModel.transform_program" class="variable"><a href="obj.html#GenericSurface.transform_program">transform_program</a></dd>
                 <dd id="SurfaceModel.surface_mask2" class="function"><a href="obj.html#GenericSurface.surface_mask2">surface_mask2</a></dd>
+
+            </div>
+            <div><dt><a href="#RegularSurface">RegularSurface</a></dt>
+                                <dd id="SurfaceModel.create_tetra" class="function"><a href="#RegularSurface.create_tetra">create_tetra</a></dd>
 
             </div>
             <div><dt><a href="xfm.html#TransformableMixin">civet.xfm.TransformableMixin</a></dt>
