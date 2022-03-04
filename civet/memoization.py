@@ -2,22 +2,16 @@
 Manual control of memoization features.
 """
 
+from dataclasses import dataclass, field
 from os import PathLike
 from pathlib import Path
-from typing import ContextManager, Sequence, Callable, NewType
-from dataclasses import dataclass, field
 from tempfile import NamedTemporaryFile, TemporaryDirectory
+from typing import ContextManager, Sequence, Callable, NewType
+
 from civet.abstract_data import AbstractDataCommand
-import subprocess
+from civet.shells import Shell, subprocess_run
 
 _IntermediatePath = NewType('IntermediatePath', Path)
-
-
-def subprocess_run(cmd: Sequence[str | PathLike]) -> None:
-    """
-    Alias for `subprocess.run(cmd, check=True)`
-    """
-    subprocess.run(cmd, check=True)
 
 
 @dataclass(frozen=True)
@@ -41,7 +35,7 @@ class Memoizer:
     """
 
     temp_dir: Path
-    shell: Callable[[Sequence[str | PathLike[str]]], None]
+    shell: Shell
     require_output: bool = True
     _cache: dict[AbstractDataCommand, _IntermediatePath] = field(init=False, default_factory=dict)
 
@@ -111,7 +105,7 @@ class Session(ContextManager[Memoizer]):
     """
     If True, raise `NoOutputError` if a command fails to produce output to its given path.
     """
-    shell: Callable[[Sequence[str | PathLike]], None] = subprocess_run
+    shell: Shell = subprocess_run
     """
     A function which executes its parameters as a subprocess.
     """

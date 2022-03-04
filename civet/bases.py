@@ -6,7 +6,8 @@ from os import PathLike
 from typing import Sequence, TypeVar, Generic, Callable
 from dataclasses import dataclass
 from civet.abstract_data import AbstractDataCommand
-from civet.memoization import Session, subprocess_run
+from civet.memoization import Session
+from civet.shells import Shell, subprocess_run
 
 
 @dataclass(frozen=True)
@@ -17,7 +18,7 @@ class DataSource(AbstractDataCommand, abc.ABC):
     """
     def save(self, output: str | PathLike,
              require_output: bool = True,
-             shell: Callable[[Sequence[str | PathLike]], None] = subprocess_run) -> None:
+             shell: Shell = subprocess_run) -> None:
         r"""
         Save the result of this command to the given output path.
 
