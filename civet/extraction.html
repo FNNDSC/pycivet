@@ -37,6 +37,9 @@
                                 <a class="function" href="#HemisphereMask.just_sphere_mesh">just_sphere_mesh</a>
                         </li>
                         <li>
+                                <a class="function" href="#HemisphereMask.smoothen_using_mincmorph">smoothen_using_mincmorph</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#HemisphereMask.prepare_for_sphere_mesh">prepare_for_sphere_mesh</a>
                         </li>
                         <li>
@@ -81,7 +84,7 @@
     </ul>
 
 
-            <footer>Version v0.0.3</footer>
+            <footer>Version v0.0.4</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -144,6 +147,25 @@ surface-extraction subroutines of the CIVET pipeline.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model_for</span><span class="p">(</span><span class="n">side</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_for_sphere_mesh</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">sphere_mesh</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">smoothen_using_mincmorph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">4.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;HemisphereMask&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simplify connectivity of this mask using mincmorph.</span>
+<span class="sd">        This is a preprocessing step to `sphere_mesh`.</span>
+
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L166-L184</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">iterations</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;iterations </span><span class="si">{</span><span class="n">iterations</span><span class="si">}</span><span class="s1"> &lt; 0&#39;</span><span class="p">)</span>
+
+        <span class="n">smoother</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="n">ngh_count</span> <span class="o">=</span> <span class="n">smoother</span><span class="o">.</span><span class="n">mincmorph_convolve_u8</span><span class="p">()</span>
+            <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;if(A[1]&lt;</span><span class="si">{</span><span class="n">lower</span><span class="si">}</span><span class="s1">)&#39;</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">else{&#39;</span> <span class="sa">f</span><span class="s1">&#39;if(A[1]&gt;</span><span class="si">{</span><span class="n">upper</span><span class="si">}</span><span class="s1">)&#39;</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{1}</span><span class="s1">else</span><span class="si">{A[0]}</span><span class="s1">}&#39;</span>
+            <span class="n">smoother</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">ngh_count</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">smoother</span>
 
     <span class="k">def</span> <span class="nf">prepare_for_sphere_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_model</span><span class="p">:</span> <span class="n">SurfaceModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SphereMeshMask&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -211,6 +233,51 @@ surface-extraction subroutines of the CIVET pipeline.</p>
         </details>
 
             <div class="docstring"><p>Just run <code>sphere_mesh</code>, which produces a mesh with non-standard connectivity.</p>
+</div>
+
+
+                            </div>
+                            <div id="HemisphereMask.smoothen_using_mincmorph" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#HemisphereMask.smoothen_using_mincmorph">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">smoothen_using_mincmorph</span><span class="signature">(
+    self,
+    iterations: int = 5,
+    lower: float = 2.5,
+    upper: float = 4.5
+) -&gt; <a href="#HemisphereMask">civet.extraction.HemisphereMask</a></span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">smoothen_using_mincmorph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">4.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;HemisphereMask&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simplify connectivity of this mask using mincmorph.</span>
+<span class="sd">        This is a preprocessing step to `sphere_mesh`.</span>
+
+<span class="sd">        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L166-L184</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">iterations</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;iterations </span><span class="si">{</span><span class="n">iterations</span><span class="si">}</span><span class="s1"> &lt; 0&#39;</span><span class="p">)</span>
+
+        <span class="n">smoother</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="n">ngh_count</span> <span class="o">=</span> <span class="n">smoother</span><span class="o">.</span><span class="n">mincmorph_convolve_u8</span><span class="p">()</span>
+            <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;if(A[1]&lt;</span><span class="si">{</span><span class="n">lower</span><span class="si">}</span><span class="s1">)&#39;</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">else{&#39;</span> <span class="sa">f</span><span class="s1">&#39;if(A[1]&gt;</span><span class="si">{</span><span class="n">upper</span><span class="si">}</span><span class="s1">)&#39;</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{1}</span><span class="s1">else</span><span class="si">{A[0]}</span><span class="s1">}&#39;</span>
+            <span class="n">smoother</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minccalc_u8</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">ngh_count</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">smoother</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Simplify connectivity of this mask using mincmorph.
+This is a preprocessing step to <code>sphere_mesh</code>.</p>
+
+<p>https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L166-L184</p>
 </div>
 
 
@@ -317,6 +384,7 @@ surface-extraction subroutines of the CIVET pipeline.</p>
                 <dd id="HemisphereMask.minccalc_u8" class="function"><a href="minc.html#GenericMask.minccalc_u8">minccalc_u8</a></dd>
                 <dd id="HemisphereMask.mincdefrag" class="function"><a href="minc.html#GenericMask.mincdefrag">mincdefrag</a></dd>
                 <dd id="HemisphereMask.reshape_bbox" class="function"><a href="minc.html#GenericMask.reshape_bbox">reshape_bbox</a></dd>
+                <dd id="HemisphereMask.mincmorph_convolve_u8" class="function"><a href="minc.html#GenericMask.mincmorph_convolve_u8">mincmorph_convolve_u8</a></dd>
 
             </div>
             <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>

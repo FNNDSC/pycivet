@@ -66,6 +66,9 @@
                         <li>
                                 <a class="function" href="#GenericMask.reshape_bbox">reshape_bbox</a>
                         </li>
+                        <li>
+                                <a class="function" href="#GenericMask.mincmorph_convolve_u8">mincmorph_convolve_u8</a>
+                        </li>
                 </ul>
 
             </li>
@@ -93,7 +96,7 @@
     </ul>
 
 
-            <footer>Version v0.0.3</footer>
+            <footer>Version v0.0.4</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -115,9 +118,12 @@
             <div class="pdoc-code codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Defines types and operations related to MINC files.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">civet.bases</span> <span class="kn">import</span> <span class="n">DataFile</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">civet.bases</span> <span class="kn">import</span> <span class="n">DataFile</span>
+<span class="kn">from</span> <span class="nn">civet.extraction.kernels</span> <span class="kn">import</span> <span class="n">ngh_count_kernel</span>
 
 <span class="n">_M</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_M&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMinc&#39;</span><span class="p">)</span>
 <span class="n">_V</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_V&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMinc&#39;</span><span class="p">)</span>
@@ -185,6 +191,17 @@
     <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;mincreshape_bbox_helper&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincmorph_convolve_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="n">ngh_count_kernel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincmorph&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-convolve&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-kernel&#39;</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
 
@@ -409,6 +426,17 @@
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;mincreshape_bbox_helper&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mincmorph_convolve_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="n">ngh_count_kernel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincmorph&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-convolve&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-kernel&#39;</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -526,6 +554,36 @@
     
 
                             </div>
+                            <div id="GenericMask.mincmorph_convolve_u8" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMask.mincmorph_convolve_u8">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">mincmorph_convolve_u8</span><span class="signature">(
+    self,
+    kernel: str | os.PathLike = PosixPath(&#39;/home/runner/work/pycivet/pycivet/civet/extraction/kernels/data/ngh_count.kernel&#39;)
+) -&gt; ~_MA</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincmorph_convolve_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PathLike</span> <span class="o">=</span> <span class="n">ngh_count_kernel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincmorph&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-convolve&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-kernel&#39;</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -589,6 +647,7 @@
                 <dd id="Mask.minccalc_u8" class="function"><a href="#GenericMask.minccalc_u8">minccalc_u8</a></dd>
                 <dd id="Mask.mincdefrag" class="function"><a href="#GenericMask.mincdefrag">mincdefrag</a></dd>
                 <dd id="Mask.reshape_bbox" class="function"><a href="#GenericMask.reshape_bbox">reshape_bbox</a></dd>
+                <dd id="Mask.mincmorph_convolve_u8" class="function"><a href="#GenericMask.mincmorph_convolve_u8">mincmorph_convolve_u8</a></dd>
 
             </div>
             <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>
