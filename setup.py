@@ -15,7 +15,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='pycivet',
-    version='0.0.3',
+    version='0.0.4',
     description='Object-oriented CIVET bindings for Python',
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -37,5 +37,8 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Medical Science Apps.'
     ],
+    package_data={
+        'civet.extraction.kernels': ['data/*']
+    },
     scripts=glob.glob('scripts/*')
 )

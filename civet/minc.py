@@ -1,9 +1,12 @@
 """
 Defines types and operations related to MINC files.
 """
-from civet.bases import DataFile
-from typing import Literal, TypeVar, Generic, Optional
 from dataclasses import dataclass
+from os import PathLike
+from typing import Literal, TypeVar, Generic, Optional
+
+from civet.bases import DataFile
+from civet.extraction.kernels import ngh_count_kernel
 
 _M = TypeVar('_M', bound='GenericMinc')
 _V = TypeVar('_V', bound='GenericMinc')
@@ -71,6 +74,17 @@ class GenericMask(GenericMinc[_MA], Generic[_MA]):
     def reshape_bbox(self) -> _MA:
         def command(output):
             return 'mincreshape_bbox_helper', self, output
+        return self.create_command(command)
+
+    def mincmorph_convolve_u8(self, kernel: str | PathLike = ngh_count_kernel) -> _MA:
+        def command(output):
+            return (
+                'mincmorph',
+                '-unsigned', '-byte',
+                '-convolve',
+                '-kernel', kernel,
+                self, output
+            )
         return self.create_command(command)
 
 

@@ -4,14 +4,15 @@ Classes related to pre- and post-processing for
 in CIVET-2.1.1).
 """
 
-from os import PathLike
-from typing import Sequence, Optional
-from civet.abstract_data import AbstractDataCommand
-from civet.minc import Mask, GenericMask
-from civet.extraction.starting_models import SurfaceModel, WHITE_MODEL_320
-from civet.extraction.surfaces import IrregularSurface
 from dataclasses import dataclass
 from enum import Enum
+from os import PathLike
+from typing import Sequence, Optional
+
+from civet.abstract_data import AbstractDataCommand
+from civet.extraction.starting_models import SurfaceModel, WHITE_MODEL_320
+from civet.extraction.surfaces import IrregularSurface
+from civet.minc import Mask, GenericMask
 
 
 class Side(Enum):
@@ -33,6 +34,25 @@ class HemisphereMask(GenericMask['HemisphereMask']):
         """
         model = self.get_model_for(side)
         return self.prepare_for_sphere_mesh(model).sphere_mesh()
+
+    def smoothen_using_mincmorph(self, iterations: int = 5, lower: float = 2.5, upper: float = 4.5) -> 'HemisphereMask':
+        """
+        Simplify connectivity of this mask using mincmorph.
+        This is a preprocessing step to `sphere_mesh`.
+
+        https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in#L166-L184
+        """
+        if not isinstance(iterations, int) or iterations < 0:
+            raise ValueError(f'iterations {iterations} < 0')
+
+        smoother = self
+
+        for _ in range(iterations):
+            ngh_count = smoother.mincmorph_convolve_u8()
+            expression = f'if(A[1]<{lower})' r'{0}else{' f'if(A[1]>{upper})' r'{1}else{A[0]}}'
+            smoother = self.minccalc_u8(expression, ngh_count)
+
+        return smoother
 
     def prepare_for_sphere_mesh(self, initial_model: SurfaceModel) -> 'SphereMeshMask':
         """
