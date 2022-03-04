@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.1"/>
+    <meta name="generator" content="pdoc 10.0.2"/>
     <title>civet.minc API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -31,31 +31,37 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
+                    <a class="class" href="#GenericMinc">GenericMinc</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#GenericMinc.__init__">GenericMinc</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GenericMinc.preferred_suffix">preferred_suffix</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMinc.mincresample">mincresample</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMinc.reshape255">reshape255</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#GenericMinc.resamplef64">resamplef64</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#GenericMask">GenericMask</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#GenericMask.__init__">GenericMask</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#GenericMask.preferred_suffix">preferred_suffix</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#GenericMask.dilate_volume">dilate_volume</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#GenericMask.mincresample">mincresample</a>
                         </li>
                         <li>
                                 <a class="function" href="#GenericMask.minccalc_u8">minccalc_u8</a>
                         </li>
                         <li>
                                 <a class="function" href="#GenericMask.mincdefrag">mincdefrag</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#GenericMask.mincblur">mincblur</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#GenericMask.reshape255">reshape255</a>
                         </li>
                         <li>
                                 <a class="function" href="#GenericMask.reshape_bbox">reshape_bbox</a>
@@ -69,10 +75,25 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#GenericFloatMinc">GenericFloatMinc</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#GenericFloatMinc.mincblur">mincblur</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#FloatMinc">FloatMinc</a>
+                            <ul class="memberlist">
+                </ul>
+
+            </li>
     </ul>
 
 
-            <footer>Version v0.0.2a2</footer>
+            <footer>Version v0.0.3</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -98,23 +119,16 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
-<span class="n">_M</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_M&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Mask&#39;</span><span class="p">)</span>
+<span class="n">_M</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_M&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMinc&#39;</span><span class="p">)</span>
+<span class="n">_V</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_V&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMinc&#39;</span><span class="p">)</span>
 
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">DataFile</span><span class="p">[</span><span class="n">_M</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">GenericMinc</span><span class="p">(</span><span class="n">DataFile</span><span class="p">[</span><span class="n">_M</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
 
     <span class="n">preferred_suffix</span> <span class="o">=</span> <span class="s1">&#39;.mnc&#39;</span>
 
-    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mask&#39;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">:</span> <span class="n">_M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">:</span> <span class="n">_V</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_V</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
@@ -122,7 +136,35 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">like_volume</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">other_volumes</span><span class="p">:</span> <span class="s1">&#39;Mask&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mask&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GenericMask&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">GenericMask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">resamplef64</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_flags</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GenericFloatMinc&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-double&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="n">GenericFloatMinc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+
+<span class="n">_MA</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_MA&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericMask&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">GenericMinc</span><span class="p">[</span><span class="n">_MA</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_MA</span><span class="p">]):</span>
+
+    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">other_volumes</span><span class="p">:</span> <span class="s1">&#39;GenericMask&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="s1">&#39;minccalc&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
@@ -132,7 +174,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mincdefrag&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stencil</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -140,23 +182,7 @@
             <span class="k">return</span> <span class="n">cmd</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="c1"># reult is not a binary mask, it has float values in [0, 1],</span>
-        <span class="c1"># maybe define a unique type?</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;mincblur&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;mincreshape_bbox_helper&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
@@ -167,37 +193,45 @@
 <span class="sd">    A `Mask` represents a volume (`.mnc`) with discrete intensities (segmentation volume or brain mask).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
+
+<span class="n">_F</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;_F&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;GenericFloatMinc&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">GenericFloatMinc</span><span class="p">(</span><span class="n">GenericMinc</span><span class="p">[</span><span class="n">_F</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_F</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_F</span><span class="p">:</span>
+        <span class="c1"># result is not a binary mask, it has float values in [0, 1],</span>
+        <span class="c1"># maybe define a unique type?</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;mincblur_correct_name.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">FloatMinc</span><span class="p">(</span><span class="n">GenericFloatMinc</span><span class="p">[</span><span class="s1">&#39;FloatMinc&#39;</span><span class="p">]):</span>
+    <span class="k">pass</span>
 </pre></div>
 
         </details>
 
             </section>
-                <section id="GenericMask">
+                <section id="GenericMinc">
                                 <div class="attr class">
-        <a class="headerlink" href="#GenericMask">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#GenericMinc">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@dataclass(frozen=True)</div>
 
         <span class="def">class</span>
-        <span class="name">GenericMask</span><wbr>(<span class="base"><a href="bases.html#DataFile">civet.bases.DataFile[~_M]</a></span>, <span class="base">typing.Generic[~_M]</span>):
+        <span class="name">GenericMinc</span><wbr>(<span class="base"><a href="bases.html#DataFile">civet.bases.DataFile[~_M]</a></span>, <span class="base">typing.Generic[~_M]</span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">DataFile</span><span class="p">[</span><span class="n">_M</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
+<span class="k">class</span> <span class="nc">GenericMinc</span><span class="p">(</span><span class="n">DataFile</span><span class="p">[</span><span class="n">_M</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_M</span><span class="p">]):</span>
 
     <span class="n">preferred_suffix</span> <span class="o">=</span> <span class="s1">&#39;.mnc&#39;</span>
 
-    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mask&#39;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">:</span> <span class="n">_M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">:</span> <span class="n">_V</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_V</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
@@ -205,7 +239,155 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">like_volume</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">other_volumes</span><span class="p">:</span> <span class="s1">&#39;Mask&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mask&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GenericMask&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">GenericMask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">resamplef64</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_flags</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GenericFloatMinc&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-double&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="n">GenericFloatMinc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>GenericMinc(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</p>
+</div>
+
+
+                            <div id="GenericMinc.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMinc.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">GenericMinc</span><span class="signature">(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="GenericMinc.preferred_suffix" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#GenericMinc.preferred_suffix">#&nbsp;&nbsp</a>
+
+        <span class="name">preferred_suffix</span><span class="default_value"> = &#39;.mnc&#39;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="GenericMinc.mincresample" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMinc.mincresample">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">mincresample</span><span class="signature">(self, like_volume: ~_V) -&gt; ~_V</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">:</span> <span class="n">_V</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_V</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-like&#39;</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">like_volume</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="GenericMinc.reshape255" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMinc.reshape255">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">reshape255</span><span class="signature">(self) -&gt; <a href="#GenericMask">civet.minc.GenericMask</a></span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GenericMask&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">GenericMask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="GenericMinc.resamplef64" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericMinc.resamplef64">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">resamplef64</span><span class="signature">(self, *extra_flags: str) -&gt; <a href="#GenericFloatMinc">civet.minc.GenericFloatMinc</a></span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">resamplef64</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_flags</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;GenericFloatMinc&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-double&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="n">GenericFloatMinc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>
+                                <dd id="GenericMinc.command" class="function"><a href="bases.html#DataFile.command">command</a></dd>
+                <dd id="GenericMinc.create_command" class="function"><a href="bases.html#DataFile.create_command">create_command</a></dd>
+
+            </div>
+            <div><dt><a href="bases.html#DataSource">civet.bases.DataSource</a></dt>
+                                <dd id="GenericMinc.save" class="function"><a href="bases.html#DataSource.save">save</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="GenericMask">
+                                <div class="attr class">
+        <a class="headerlink" href="#GenericMask">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">GenericMask</span><wbr>(<span class="base"><a href="#GenericMinc">civet.minc.GenericMinc[~_MA]</a></span>, <span class="base">typing.Generic[~_MA]</span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GenericMask</span><span class="p">(</span><span class="n">GenericMinc</span><span class="p">[</span><span class="n">_MA</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_MA</span><span class="p">]):</span>
+
+    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">other_volumes</span><span class="p">:</span> <span class="s1">&#39;GenericMask&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="s1">&#39;minccalc&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
@@ -215,7 +397,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mincdefrag&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stencil</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -223,23 +405,7 @@
             <span class="k">return</span> <span class="n">cmd</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="c1"># reult is not a binary mask, it has float values in [0, 1],</span>
-        <span class="c1"># maybe define a unique type?</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;mincblur&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;mincreshape_bbox_helper&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
@@ -247,31 +413,10 @@
 
         </details>
 
-            <div class="docstring"><p>GenericMask(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</p>
+            <div class="docstring"><p>GenericMinc(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</p>
 </div>
 
 
-                            <div id="GenericMask.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#GenericMask.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">GenericMask</span><span class="signature">(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</span>
-    </div>
-
-    
-    
-
-                            </div>
-                            <div id="GenericMask.preferred_suffix" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#GenericMask.preferred_suffix">#&nbsp;&nbsp</a>
-
-        <span class="name">preferred_suffix</span><span class="default_value"> = &#39;.mnc&#39;</span>
-    </div>
-
-    
-    
-
-                            </div>
                             <div id="GenericMask.dilate_volume" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#GenericMask.dilate_volume">#&nbsp;&nbsp</a>
 
@@ -282,42 +427,18 @@
     dilation_value: int,
     neighbors: Literal[6, 26],
     n_dilations: int
-) -&gt; <a href="#Mask">civet.minc.Mask</a></span>:
+) -&gt; ~_MA</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mask&#39;</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">dilate_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dilation_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">26</span><span class="p">],</span> <span class="n">n_dilations</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="s1">&#39;dilate_volume&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">dilation_value</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbors</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_dilations</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="GenericMask.mincresample" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#GenericMask.mincresample">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">mincresample</span><span class="signature">(self, like_volume: ~_M) -&gt; ~_M</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincresample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">:</span> <span class="n">_M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="s1">&#39;mincresample&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;-like&#39;</span><span class="p">,</span> <span class="n">like_volume</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">like_volume</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -333,13 +454,13 @@
             <span class="name">minccalc_u8</span><span class="signature">(
     self,
     expression: str,
-    *other_volumes: <a href="#Mask">civet.minc.Mask</a>
-) -&gt; <a href="#Mask">civet.minc.Mask</a></span>:
+    *other_volumes: <a href="#GenericMask">civet.minc.GenericMask</a>
+) -&gt; ~_MA</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">other_volumes</span><span class="p">:</span> <span class="s1">&#39;Mask&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Mask&#39;</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">minccalc_u8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">other_volumes</span><span class="p">:</span> <span class="s1">&#39;GenericMask&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="s1">&#39;minccalc&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span>
@@ -365,12 +486,12 @@
     label: int,
     stencil: Literal[6, 19, 27],
     max_connect: Optional[int] = None
-) -&gt; ~_M</span>:
+) -&gt; ~_MA</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincdefrag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">stencil</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">max_connect</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mincdefrag&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stencil</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">max_connect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -384,65 +505,17 @@
     
 
                             </div>
-                            <div id="GenericMask.mincblur" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#GenericMask.mincblur">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">mincblur</span><span class="signature">(self, fwhm: int) -&gt; ~_M</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="c1"># reult is not a binary mask, it has float values in [0, 1],</span>
-        <span class="c1"># maybe define a unique type?</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;mincblur&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="GenericMask.reshape255" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#GenericMask.reshape255">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">reshape255</span><span class="signature">(self) -&gt; ~_M</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reshape255</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="s1">&#39;mincreshape&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-clobber&#39;</span><span class="p">,</span> <span class="s1">&#39;-unsigned&#39;</span><span class="p">,</span> <span class="s1">&#39;-byte&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;-image_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_range&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;255&#39;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
                             <div id="GenericMask.reshape_bbox" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#GenericMask.reshape_bbox">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">reshape_bbox</span><span class="signature">(self) -&gt; ~_M</span>:
+            <span class="name">reshape_bbox</span><span class="signature">(self) -&gt; ~_MA</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_M</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reshape_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_MA</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;mincreshape_bbox_helper&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
@@ -456,7 +529,15 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>
+                                    <div><dt><a href="#GenericMinc">GenericMinc</a></dt>
+                                <dd id="GenericMask.__init__" class="function"><a href="#GenericMinc.__init__">GenericMinc</a></dd>
+                <dd id="GenericMask.preferred_suffix" class="variable"><a href="#GenericMinc.preferred_suffix">preferred_suffix</a></dd>
+                <dd id="GenericMask.mincresample" class="function"><a href="#GenericMinc.mincresample">mincresample</a></dd>
+                <dd id="GenericMask.reshape255" class="function"><a href="#GenericMinc.reshape255">reshape255</a></dd>
+                <dd id="GenericMask.resamplef64" class="function"><a href="#GenericMinc.resamplef64">resamplef64</a></dd>
+
+            </div>
+            <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>
                                 <dd id="GenericMask.command" class="function"><a href="bases.html#DataFile.command">command</a></dd>
                 <dd id="GenericMask.create_command" class="function"><a href="bases.html#DataFile.create_command">create_command</a></dd>
 
@@ -495,15 +576,18 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#GenericMask">GenericMask</a></dt>
-                                <dd id="Mask.__init__" class="function"><a href="#GenericMask.__init__">GenericMask</a></dd>
-                <dd id="Mask.preferred_suffix" class="variable"><a href="#GenericMask.preferred_suffix">preferred_suffix</a></dd>
-                <dd id="Mask.dilate_volume" class="function"><a href="#GenericMask.dilate_volume">dilate_volume</a></dd>
-                <dd id="Mask.mincresample" class="function"><a href="#GenericMask.mincresample">mincresample</a></dd>
+                                    <div><dt><a href="#GenericMinc">GenericMinc</a></dt>
+                                <dd id="Mask.__init__" class="function"><a href="#GenericMinc.__init__">GenericMinc</a></dd>
+                <dd id="Mask.preferred_suffix" class="variable"><a href="#GenericMinc.preferred_suffix">preferred_suffix</a></dd>
+                <dd id="Mask.mincresample" class="function"><a href="#GenericMinc.mincresample">mincresample</a></dd>
+                <dd id="Mask.reshape255" class="function"><a href="#GenericMinc.reshape255">reshape255</a></dd>
+                <dd id="Mask.resamplef64" class="function"><a href="#GenericMinc.resamplef64">resamplef64</a></dd>
+
+            </div>
+            <div><dt><a href="#GenericMask">GenericMask</a></dt>
+                                <dd id="Mask.dilate_volume" class="function"><a href="#GenericMask.dilate_volume">dilate_volume</a></dd>
                 <dd id="Mask.minccalc_u8" class="function"><a href="#GenericMask.minccalc_u8">minccalc_u8</a></dd>
                 <dd id="Mask.mincdefrag" class="function"><a href="#GenericMask.mincdefrag">mincdefrag</a></dd>
-                <dd id="Mask.mincblur" class="function"><a href="#GenericMask.mincblur">mincblur</a></dd>
-                <dd id="Mask.reshape255" class="function"><a href="#GenericMask.reshape255">reshape255</a></dd>
                 <dd id="Mask.reshape_bbox" class="function"><a href="#GenericMask.reshape_bbox">reshape_bbox</a></dd>
 
             </div>
@@ -514,6 +598,126 @@
             </div>
             <div><dt><a href="bases.html#DataSource">civet.bases.DataSource</a></dt>
                                 <dd id="Mask.save" class="function"><a href="bases.html#DataSource.save">save</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="GenericFloatMinc">
+                                <div class="attr class">
+        <a class="headerlink" href="#GenericFloatMinc">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">GenericFloatMinc</span><wbr>(<span class="base"><a href="#GenericMinc">civet.minc.GenericMinc[~_F]</a></span>, <span class="base">typing.Generic[~_F]</span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">GenericFloatMinc</span><span class="p">(</span><span class="n">GenericMinc</span><span class="p">[</span><span class="n">_F</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">_F</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_F</span><span class="p">:</span>
+        <span class="c1"># result is not a binary mask, it has float values in [0, 1],</span>
+        <span class="c1"># maybe define a unique type?</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;mincblur_correct_name.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>GenericMinc(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</p>
+</div>
+
+
+                            <div id="GenericFloatMinc.mincblur" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#GenericFloatMinc.mincblur">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">mincblur</span><span class="signature">(self, fwhm: float) -&gt; ~_F</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">mincblur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_F</span><span class="p">:</span>
+        <span class="c1"># result is not a binary mask, it has float values in [0, 1],</span>
+        <span class="c1"># maybe define a unique type?</span>
+        <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;mincblur_correct_name.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="p">,</span> <span class="s1">&#39;-fwhm&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">fwhm</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#GenericMinc">GenericMinc</a></dt>
+                                <dd id="GenericFloatMinc.__init__" class="function"><a href="#GenericMinc.__init__">GenericMinc</a></dd>
+                <dd id="GenericFloatMinc.preferred_suffix" class="variable"><a href="#GenericMinc.preferred_suffix">preferred_suffix</a></dd>
+                <dd id="GenericFloatMinc.mincresample" class="function"><a href="#GenericMinc.mincresample">mincresample</a></dd>
+                <dd id="GenericFloatMinc.reshape255" class="function"><a href="#GenericMinc.reshape255">reshape255</a></dd>
+                <dd id="GenericFloatMinc.resamplef64" class="function"><a href="#GenericMinc.resamplef64">resamplef64</a></dd>
+
+            </div>
+            <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>
+                                <dd id="GenericFloatMinc.command" class="function"><a href="bases.html#DataFile.command">command</a></dd>
+                <dd id="GenericFloatMinc.create_command" class="function"><a href="bases.html#DataFile.create_command">create_command</a></dd>
+
+            </div>
+            <div><dt><a href="bases.html#DataSource">civet.bases.DataSource</a></dt>
+                                <dd id="GenericFloatMinc.save" class="function"><a href="bases.html#DataSource.save">save</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="FloatMinc">
+                                <div class="attr class">
+        <a class="headerlink" href="#FloatMinc">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">FloatMinc</span><wbr>(<span class="base"><a href="#GenericFloatMinc">civet.minc.GenericFloatMinc[ForwardRef('FloatMinc')]</a></span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FloatMinc</span><span class="p">(</span><span class="n">GenericFloatMinc</span><span class="p">[</span><span class="s1">&#39;FloatMinc&#39;</span><span class="p">]):</span>
+    <span class="k">pass</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>GenericMinc(input: str | os.PathLike | <a href="abstract_data.html#AbstractDataCommand">civet.abstract_data.AbstractDataCommand</a>)</p>
+</div>
+
+
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#GenericMinc">GenericMinc</a></dt>
+                                <dd id="FloatMinc.__init__" class="function"><a href="#GenericMinc.__init__">GenericMinc</a></dd>
+                <dd id="FloatMinc.preferred_suffix" class="variable"><a href="#GenericMinc.preferred_suffix">preferred_suffix</a></dd>
+                <dd id="FloatMinc.mincresample" class="function"><a href="#GenericMinc.mincresample">mincresample</a></dd>
+                <dd id="FloatMinc.reshape255" class="function"><a href="#GenericMinc.reshape255">reshape255</a></dd>
+                <dd id="FloatMinc.resamplef64" class="function"><a href="#GenericMinc.resamplef64">resamplef64</a></dd>
+
+            </div>
+            <div><dt><a href="#GenericFloatMinc">GenericFloatMinc</a></dt>
+                                <dd id="FloatMinc.mincblur" class="function"><a href="#GenericFloatMinc.mincblur">mincblur</a></dd>
+
+            </div>
+            <div><dt><a href="bases.html#DataFile">civet.bases.DataFile</a></dt>
+                                <dd id="FloatMinc.command" class="function"><a href="bases.html#DataFile.command">command</a></dd>
+                <dd id="FloatMinc.create_command" class="function"><a href="bases.html#DataFile.create_command">create_command</a></dd>
+
+            </div>
+            <div><dt><a href="bases.html#DataSource">civet.bases.DataSource</a></dt>
+                                <dd id="FloatMinc.save" class="function"><a href="bases.html#DataSource.save">save</a></dd>
 
             </div>
                                 </dl>

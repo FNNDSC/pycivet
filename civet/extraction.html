@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.1"/>
+    <meta name="generator" content="pdoc 10.0.2"/>
     <title>civet.extraction API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -81,7 +81,7 @@
     </ul>
 
 
-            <footer>Version v0.0.2a2</footer>
+            <footer>Version v0.0.3</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev">
             built with <span class="visually-hidden">pdoc</span><img
@@ -194,8 +194,8 @@ surface-extraction subroutines of the CIVET pipeline.</p>
             <span class="def">def</span>
             <span class="name">just_sphere_mesh</span><span class="signature">(
     self,
-    side: Optional[<a href="#hemisphere.Side">civet.extraction.hemisphere.Side</a>]
-) -&gt; <a href="#surfaces.IrregularSurface">civet.extraction.surfaces.IrregularSurface</a></span>:
+    side: Optional[<a href="#Side">civet.extraction.Side</a>]
+) -&gt; <a href="#IrregularSurface">civet.extraction.IrregularSurface</a></span>:
     </div>
 
             <details>
@@ -222,8 +222,8 @@ surface-extraction subroutines of the CIVET pipeline.</p>
             <span class="def">def</span>
             <span class="name">prepare_for_sphere_mesh</span><span class="signature">(
     self,
-    initial_model: <a href="#starting_models.SurfaceModel">civet.extraction.starting_models.SurfaceModel</a>
-) -&gt; <a href="#hemisphere.SphereMeshMask">civet.extraction.hemisphere.SphereMeshMask</a></span>:
+    initial_model: <a href="#SurfaceModel">civet.extraction.SurfaceModel</a>
+) -&gt; civet.extraction.hemisphere.SphereMeshMask</span>:
     </div>
 
             <details>
@@ -270,8 +270,8 @@ surface-extraction subroutines of the CIVET pipeline.</p>
 
             <span class="def">def</span>
             <span class="name">get_model_for</span><span class="signature">(
-    side: Optional[<a href="#hemisphere.Side">civet.extraction.hemisphere.Side</a>] = None
-) -&gt; <a href="#starting_models.SurfaceModel">civet.extraction.starting_models.SurfaceModel</a></span>:
+    side: Optional[<a href="#Side">civet.extraction.Side</a>] = None
+) -&gt; <a href="#SurfaceModel">civet.extraction.SurfaceModel</a></span>:
     </div>
 
             <details>
@@ -304,15 +304,18 @@ surface-extraction subroutines of the CIVET pipeline.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="minc.html#GenericMask">civet.minc.GenericMask</a></dt>
-                                <dd id="HemisphereMask.__init__" class="function"><a href="minc.html#GenericMask.__init__">GenericMask</a></dd>
-                <dd id="HemisphereMask.preferred_suffix" class="variable"><a href="minc.html#GenericMask.preferred_suffix">preferred_suffix</a></dd>
-                <dd id="HemisphereMask.dilate_volume" class="function"><a href="minc.html#GenericMask.dilate_volume">dilate_volume</a></dd>
-                <dd id="HemisphereMask.mincresample" class="function"><a href="minc.html#GenericMask.mincresample">mincresample</a></dd>
+                                    <div><dt><a href="minc.html#GenericMinc">civet.minc.GenericMinc</a></dt>
+                                <dd id="HemisphereMask.__init__" class="function"><a href="minc.html#GenericMinc.__init__">GenericMinc</a></dd>
+                <dd id="HemisphereMask.preferred_suffix" class="variable"><a href="minc.html#GenericMinc.preferred_suffix">preferred_suffix</a></dd>
+                <dd id="HemisphereMask.mincresample" class="function"><a href="minc.html#GenericMinc.mincresample">mincresample</a></dd>
+                <dd id="HemisphereMask.reshape255" class="function"><a href="minc.html#GenericMinc.reshape255">reshape255</a></dd>
+                <dd id="HemisphereMask.resamplef64" class="function"><a href="minc.html#GenericMinc.resamplef64">resamplef64</a></dd>
+
+            </div>
+            <div><dt><a href="minc.html#GenericMask">civet.minc.GenericMask</a></dt>
+                                <dd id="HemisphereMask.dilate_volume" class="function"><a href="minc.html#GenericMask.dilate_volume">dilate_volume</a></dd>
                 <dd id="HemisphereMask.minccalc_u8" class="function"><a href="minc.html#GenericMask.minccalc_u8">minccalc_u8</a></dd>
                 <dd id="HemisphereMask.mincdefrag" class="function"><a href="minc.html#GenericMask.mincdefrag">mincdefrag</a></dd>
-                <dd id="HemisphereMask.mincblur" class="function"><a href="minc.html#GenericMask.mincblur">mincblur</a></dd>
-                <dd id="HemisphereMask.reshape255" class="function"><a href="minc.html#GenericMask.reshape255">reshape255</a></dd>
                 <dd id="HemisphereMask.reshape_bbox" class="function"><a href="minc.html#GenericMask.reshape_bbox">reshape_bbox</a></dd>
 
             </div>
@@ -540,7 +543,7 @@ denominators of <em>N</em>.</p>
                 <div class="decorator">@classmethod</div>
 
             <span class="def">def</span>
-            <span class="name">get_model</span><span class="signature">(cls, name: str) -&gt; <a href="#starting_models.SurfaceModel">civet.extraction.starting_models.SurfaceModel</a></span>:
+            <span class="name">get_model</span><span class="signature">(cls, name: str) -&gt; <a href="#SurfaceModel">civet.extraction.SurfaceModel</a></span>:
     </div>
 
             <details>
