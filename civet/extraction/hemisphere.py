@@ -5,7 +5,6 @@ in CIVET-2.1.1).
 """
 
 from dataclasses import dataclass
-from enum import Enum
 from os import PathLike
 from typing import Sequence, Optional
 
@@ -13,14 +12,7 @@ from civet.abstract_data import AbstractDataCommand
 from civet.extraction.starting_models import SurfaceModel, WHITE_MODEL_320
 from civet.extraction.surfaces import IrregularSurface
 from civet.minc import Mask, GenericMask
-
-
-class Side(Enum):
-    """
-    Brain hemisphere side.
-    """
-    LEFT = 'left'
-    RIGHT = 'right'
+from civet.extraction.side import Side
 
 
 class HemisphereMask(GenericMask['HemisphereMask']):
@@ -28,7 +20,7 @@ class HemisphereMask(GenericMask['HemisphereMask']):
     Represents a binary mask of a brain hemisphere (either left or right).
     """
 
-    def just_sphere_mesh(self, side: Optional[Side]) -> IrregularSurface:
+    def just_sphere_mesh(self, side: Optional[Side] = None) -> IrregularSurface:
         """
         Just run `sphere_mesh`, which produces a mesh with non-standard connectivity.
         """

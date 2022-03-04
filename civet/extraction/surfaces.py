@@ -3,18 +3,28 @@ Further subtyping of `GenericSurface` to be either an `IrregularSurface`
 or `RegularSurface` depending on mesh connectivity.
 """
 
-from typing import TypeVar, Generic
+from dataclasses import dataclass
+from os import PathLike
+from typing import TypeVar, Generic, Sequence, Optional
+
+from civet.abstract_data import AbstractDataCommand
+from civet.bases import DataSource
+from civet.extraction.side import Side
 from civet.obj import GenericSurface
 
 _IS = TypeVar('_IS', bound='GenericIrregularSurface')
 _RS = TypeVar('_RS', bound='GenericRegularSurface')
 
 
-class IrregularSurface(GenericSurface[_IS], Generic[_IS]):
-    """
-    Represents a mesh (`.obj`) with irregular connectivity.
-    """
-    pass
+@dataclass(frozen=True)
+class Tetra(DataSource):
+
+    center: tuple[float, float, float] = (0.0, 0.0, 0.0)
+    radius: tuple[float, float, float] = (1.0, 1.0, 1.0)
+    triangles: int = 81920
+
+    def command(self, output: str | PathLike) -> Sequence[str | PathLike]:
+        return 'create_tetra', output, *self.center, *self.radius
 
 
 class RegularSurface(GenericSurface[_RS], Generic[_RS]):
@@ -29,4 +39,24 @@ class RegularSurface(GenericSurface[_RS], Generic[_RS]):
     polygonal mesh of *N* triangles where 320 and 4 are common
     denominators of *N*.
     """
-    pass
+    @classmethod
+    def create_tetra(cls, tetra: Tetra) -> 'RegularSurface[RegularSurface]':
+        return cls(tetra)
+
+
+class IrregularSurface(GenericSurface[_IS], Generic[_IS]):
+    """
+    Represents a mesh (`.obj`) with irregular connectivity.
+    """
+    def interpolate_with_sphere(self, side: Optional[Side] = None) -> RegularSurface:
+        """
+        Resample this surface to have a standard number of 81,920 triangles.
+        """
+        class InterpolatedFromSphere(RegularSurface):
+            def command(self, output: str | PathLike
+                        ) -> Sequence[str | PathLike | AbstractDataCommand]:
+                side_option = []
+                if side is not None:
+                    side_option = ['-' + side.value]
+                return 'interpolate_surface_with_sphere.pl', *side_option, self.input, output
+        return InterpolatedFromSphere(self)
