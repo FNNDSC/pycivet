@@ -12,7 +12,25 @@ Python bindings for CIVET binaries like `transform_objects` and `mincdefrag`.
 CIVET binaries with object-oriented syntax.
 Intermediate files are written to temporary locations and cached.
 
-### Example
+### Examples
+
+Consider this bash script:
+
+```shell
+temp1=$(mktemp --suffix=.mnc)
+temp2=$(mktemp)
+mincresample -quiet -double mask.mnc $temp1
+mincblur -quiet -fwhm $temp1 $temp2
+mv "${temp2}_blur.mnc" blurred_mask.mnc
+rm $temp1
+```
+
+The equivalent using `pycivet`:
+
+```python
+from civet.minc import Mask
+Mask("wm.right.mnc").resamplef64().mincblur(fwhm=3).save("blurred_mask.mnc")
+```
 
 This Perl code snippet from `marching_cubes.pl` can be expressed in Python as such:
 

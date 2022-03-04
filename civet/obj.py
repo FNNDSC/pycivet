@@ -2,12 +2,12 @@
 Defines types related to surface meshes (`.obj` file format).
 """
 from civet.xfm import TransformableMixin
-from civet.minc import Mask
+from civet.minc import GenericMask
 from typing import TypeVar, Generic
 from dataclasses import dataclass
 
 _S = TypeVar('_S', bound='GenericSurface')
-_M = TypeVar('_M', bound=Mask)
+_M = TypeVar('_M', bound=GenericMask)
 
 
 @dataclass(frozen=True)
