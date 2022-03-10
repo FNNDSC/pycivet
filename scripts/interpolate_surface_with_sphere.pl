@@ -151,20 +151,6 @@ sub resample_white_surface {
 
   }
 
-  # Create a new hi-res background mesh with uniform triangles.
-  # This new background mesh will be used for interpolating the
-  # resampled white surface after surface registration. This way,
-  # we can associate the standard sphere to this new bg mesh
-  # since the standard sphere is used during surface registration.
-
-  $npolys *= 4;
-  &subdivide_mesh( $current_sphere, $npolys, $current_sphere );
-
-  &run( 'interpolate_sphere', $white_mc, $sphere_mc,
-        $current_sphere, $white_mc );
-
-  &subdivide_mesh( $unit_sphere, $npolys, $sphere_mc );
-
   unlink( $current_sphere );
 
 }
