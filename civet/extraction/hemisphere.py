@@ -20,12 +20,12 @@ class HemisphereMask(GenericMask['HemisphereMask']):
     Represents a binary mask of a brain hemisphere (either left or right).
     """
 
-    def just_sphere_mesh(self, side: Optional[Side] = None) -> IrregularSurface:
+    def just_sphere_mesh(self, side: Optional[Side] = None, subsample: bool = False) -> IrregularSurface:
         """
         Just run `sphere_mesh`, which produces a mesh with non-standard connectivity.
         """
         model = self.get_model_for(side)
-        return self.prepare_for_sphere_mesh(model).sphere_mesh()
+        return self.prepare_for_sphere_mesh(model).sphere_mesh(subsample)
 
     def smoothen_using_mincmorph(self, iterations: int = 5, lower: float = 2.5, upper: float = 4.5) -> 'HemisphereMask':
         """
@@ -96,9 +96,11 @@ class SphereMeshMask:
     on a `SurfaceModel`.
     """
 
-    def sphere_mesh(self) -> IrregularSurface:
+    def sphere_mesh(self, subsample: bool = False) -> IrregularSurface:
         class SphereMeshSurface(IrregularSurface):
             def command(self, output: str | PathLike
                         ) -> Sequence[str | PathLike | AbstractDataCommand]:
+                if subsample:
+                    return 'sphere_mesh', self.input, output, '-subsample'
                 return 'sphere_mesh', self.input, output
         return SphereMeshSurface(self.sphere_mesh_mask)
