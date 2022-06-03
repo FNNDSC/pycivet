@@ -48,15 +48,28 @@ class IrregularSurface(GenericSurface[_IS], Generic[_IS]):
     """
     Represents a mesh (`.obj`) with irregular connectivity.
     """
-    def interpolate_with_sphere(self, side: Optional[Side] = None) -> RegularSurface:
+    def interpolate_with_sphere(
+            self,
+            side: Optional[Side] = None,
+            n_inflate: Optional[int] = None,
+            n_smooth: Optional[int] = None
+    ) -> RegularSurface:
         """
         Resample this surface to have a standard number of 81,920 triangles.
+
+        If `n_inflate` and `n_smooth` are given, use `inflate_to_sphere_implicit` instead
+        of `inflate_to_sphere`.
         """
+        options = []
+        if side is not None:
+            options += ['-' + side.value]
+        if (n_inflate is None) ^ (n_smooth is None):
+            raise ValueError('both n_inflate and n_smooth must be specified')
+        if n_inflate is not None and n_smooth is not None:
+            options += ['-inflate', str(n_inflate), str(n_smooth)]
+
         class InterpolatedFromSphere(RegularSurface):
             def command(self, output: str | PathLike
                         ) -> Sequence[str | PathLike | AbstractDataCommand]:
-                side_option = []
-                if side is not None:
-                    side_option = ['-' + side.value]
-                return 'interpolate_surface_with_sphere.pl', *side_option, self.input, output
+                return 'interpolate_surface_with_sphere.pl', *options, self.input, output
         return InterpolatedFromSphere(self)

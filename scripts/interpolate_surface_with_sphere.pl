@@ -1,6 +1,11 @@
 #!/usr/bin/env perl
-# copied from
-# https://github.com/aces/surface-extraction/blob/master/scripts/marching_cubes.pl.in
+
+# For the most part, this was adapted from
+# https://github.com/aces/surface-extraction/blob/7c9c5987a2f8f5fdeb8d3fd15f2f9b636401d9a1/scripts/marching_cubes.pl.in
+#
+# o 2022-05-06
+#   Replaced `inflate_to_sphere` with `inflate_to_sphere_implicit`
+
 
 use strict;
 use warnings "all";
@@ -17,16 +22,18 @@ McGill University
 LICENSE
 
 my $usage = <<USAGE;
-Usage: $ProgramName [-left|-right] surface_unknown.obj surface_81920.obj
+Usage: $ProgramName [-left|-right] [-inflate 2000 2000] surface_unknown.obj surface_81920.obj
 
 $license
 USAGE
 
 
 my $side = undef;
+my @inflate_args = undef;
 my @options = (
   ['-left', 'const', "Left", \$side, "Surface is a left surface"],
   ['-right', 'const', "Right", \$side, "Surface is a right surface (sphere should be flipped)"],
+  ['-inflate', 'integer', 2, \@inflate_args, "Use inflate_to_sphere_implicit instead of inflate_to_sphere, and pass the given arguments to it."]
 );
 
 GetOptions( \@options, \@ARGV ) or exit 1;
@@ -49,7 +56,13 @@ my $white_surface_sm = $input_file;
 # Inflate the white surface onto a unit sphere.
 
 my $white_sphere_sm = "${tmpdir}/white_sphere_sm.obj";
-&run( 'inflate_to_sphere', $white_surface_sm, $white_sphere_sm );
+
+if ( @inflate_args ) {
+  &run( 'inflate_to_sphere_implicit', $white_surface_sm, $white_sphere_sm, $inflate_args[0], $inflate_args[1] );
+}
+else {
+  &run( 'inflate_to_sphere', $white_surface_sm, $white_sphere_sm );
+}
 
 # Interpolate from sphere-to-sphere to resample the white surface
 # using the 40962 vertices on the standard ICBM surface average
