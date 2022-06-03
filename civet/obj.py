@@ -20,6 +20,11 @@ class GenericSurface(TransformableMixin[_S], Generic[_S]):
             return 'surface_mask2', in_volume, self, output
         return in_volume.create_command(command)
 
+    def adapt_object_mesh(self, n_iterations: int, n_adapt: int, n_adapt_smooth: int) -> _S:
+        def command(output):
+            return 'adapt_object_mesh', self, output, str(n_iterations), str(n_adapt), str(n_adapt_smooth)
+        return self.create_command(command)
+
 
 class Surface(GenericSurface['Surface']):
     """
