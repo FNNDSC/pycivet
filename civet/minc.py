@@ -7,15 +7,17 @@ from typing import Literal, TypeVar, Generic, Optional
 
 from civet.bases import DataFile
 from civet.extraction.kernels import ngh_count_kernel
+from civet.xfm import TransformProgram, TransformableMixin
 
 _M = TypeVar('_M', bound='GenericMinc')
 _V = TypeVar('_V', bound='GenericMinc')
 
 
 @dataclass(frozen=True)
-class GenericMinc(DataFile[_M], Generic[_M]):
+class GenericMinc(TransformableMixin[_M], DataFile[_M], Generic[_M]):
 
     preferred_suffix = '.mnc'
+    transform_program: TransformProgram = 'transform_volume'
 
     def mincresample(self, like_volume: _V) -> _V:
         def command(output):
@@ -38,6 +40,13 @@ class GenericMinc(DataFile[_M], Generic[_M]):
         def command(output):
             return 'mincresample', '-quiet', '-double', *extra_flags, self, output
         return GenericFloatMinc(self).create_command(command)
+
+
+class MincVolume(GenericMinc['MincVolume']):
+    """
+    A `MincVolume` represents a volume (`.mnc`).
+    """
+    pass
 
 
 _MA = TypeVar('_MA', bound='GenericMask')
