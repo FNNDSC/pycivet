@@ -9,10 +9,10 @@ jobs:
     name: Upload to PyPI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.10.2'
+          python-version: '3.10'
       - name: Install
         run: |
           pip install wheel
@@ -20,7 +20,7 @@ jobs:
       - name: Build
         run: python setup.py sdist bdist_wheel
       - name: Upload
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
@@ -33,11 +33,11 @@ jobs:
       MNI_DATAPATH: /opt/CIVET/dist/share
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
         # For pdoc to resolve the defined constants, these files need to exist
       - name: Download surface-extraction models
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: surface-extraction
           repository: aces/surface-extraction
@@ -47,9 +47,9 @@ jobs:
           sudo cp -v surface-extraction/models/* $MNI_DATAPATH/surface-extraction
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10.2'
+          python-version: '3.10'
       - name: Pip
         run: |
           pip install -e .
@@ -57,7 +57,7 @@ jobs:
       - name: Pdoc
         run:  pdoc --footer-text='Version ${{ github.ref_name }}' civet -o pdoc
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.2.2
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: pdoc
