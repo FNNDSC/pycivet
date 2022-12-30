@@ -16,7 +16,8 @@ class SurfaceModel(RegularSurface['SurfaceModel']):
     def get_model(cls, name: str) -> Optional['SurfaceModel']:
         data_paths = MNI_DATAPATH.split(':')
         possible_models = map(lambda b: Path(b) / 'surface-extraction' / name, data_paths)
-        actual_models = filter(None, possible_models)
+        actual_model_paths = filter(lambda p: p.is_file(), possible_models)
+        actual_models = map(cls, actual_model_paths)
         return next(actual_models, None)
 
 
